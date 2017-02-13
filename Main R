@@ -49,7 +49,13 @@ download.file("https://s3.amazonaws.com/tripdata/201612-citibike-tripdata.zip", 
 M12 <- read.csv(unz(temp, "201612-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
+#Updating names for M10-M12 to match the headers of the others
+names(M10) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
+names(M11) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
+names(M12) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
+
 #Combine to single data set
+
 citibike2k16 <- rbind(M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12)
 
 #Removing all monthly variables
