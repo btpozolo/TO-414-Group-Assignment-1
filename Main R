@@ -5,11 +5,6 @@ download.file("https://s3.amazonaws.com/tripdata/201601-citibike-tripdata.zip",t
 data <- read.csv(unz(temp, "201601-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-#Reformatting Time
-
-bike$starttime <- as.POSIXct(as.character(bike$starttime), format = '%m/%d/%Y %H:%M:%S')
-bike$stoptime <- as.POSIXct(as.character(bike$stoptime), format = '%m/%d/%Y %H:%M:%S')
-
 temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201601-citibike-tripdata.zip", temp)
 M1 <- read.csv(unz(temp, "201601-citibike-tripdata.csv"), header = T)
@@ -72,4 +67,7 @@ unlink(temp)
 
 citibike2k16 <- combine(M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12)
 
+#Reformatting Time
 
+bike$starttime <- as.POSIXct(as.character(bike$starttime), format = '%m/%d/%Y %H:%M:%S')
+bike$stoptime <- as.POSIXct(as.character(bike$stoptime), format = '%m/%d/%Y %H:%M:%S')
