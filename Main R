@@ -1,66 +1,50 @@
 #Unpacking data
 
 temp <- tempfile()
-download.file("https://s3.amazonaws.com/tripdata/201601-citibike-tripdata.zip",temp)
-data <- read.csv(unz(temp, "201601-citibike-tripdata.csv"), header = T)
-unlink(temp)
-
-temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201601-citibike-tripdata.zip", temp)
 M1 <- read.csv(unz(temp, "201601-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201602-citibike-tripdata.zip", temp)
 M2 <- read.csv(unz(temp, "201602-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201603-citibike-tripdata.zip", temp)
 M3 <- read.csv(unz(temp, "201603-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201604-citibike-tripdata.zip", temp)
 M4 <- read.csv(unz(temp, "201604-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201605-citibike-tripdata.zip", temp)
 M5 <- read.csv(unz(temp, "201605-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201606-citibike-tripdata.zip", temp)
 M6 <- read.csv(unz(temp, "201606-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201607-citibike-tripdata.zip", temp)
 M7 <- read.csv(unz(temp, "201607-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201608-citibike-tripdata.zip", temp)
 M8 <- read.csv(unz(temp, "201608-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201609-citibike-tripdata.zip", temp)
 M9 <- read.csv(unz(temp, "201609-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201610-citibike-tripdata.zip", temp)
 M10 <- read.csv(unz(temp, "201610-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201611-citibike-tripdata.zip", temp)
 M11 <- read.csv(unz(temp, "201611-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-temp <- tempfile()
 download.file("https://s3.amazonaws.com/tripdata/201612-citibike-tripdata.zip", temp)
 M12 <- read.csv(unz(temp, "201612-citibike-tripdata.csv"), header = T)
 unlink(temp)
