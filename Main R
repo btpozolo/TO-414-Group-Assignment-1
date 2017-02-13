@@ -49,9 +49,11 @@ download.file("https://s3.amazonaws.com/tripdata/201612-citibike-tripdata.zip", 
 M12 <- read.csv(unz(temp, "201612-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
+#Combine to single data set
 citibike2k16 <- rbind(M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12)
 
-#Reformatting Time
+#Removing all monthly variables
 
+#Reformatting Time
 bike$starttime <- as.POSIXct(as.character(bike$starttime), format = '%m/%d/%Y %H:%M:%S')
 bike$stoptime <- as.POSIXct(as.character(bike$stoptime), format = '%m/%d/%Y %H:%M:%S')
