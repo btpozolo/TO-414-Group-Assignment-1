@@ -59,12 +59,12 @@ names(M12) <- c("tripduration", "starttime", "stoptime", "start.station.id", "st
 #Combine to single data set
 citibike2k16 <- rbind(M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12)
 
+#Removing all monthly variables
+rm(list=setdiff(ls(), "citibike2k16"))
+
 #Take only 1% of data set (to be removed at end of project)
 trainingdata <- sample_frac(citibike2k16, 0.01)
 
-#TODO
-#Removing all monthly variables
-
 #Reformatting Time
-bike$starttime <- as.POSIXct(as.character(bike$starttime), format = '%m/%d/%Y %H:%M:%S')
-bike$stoptime <- as.POSIXct(as.character(bike$stoptime), format = '%m/%d/%Y %H:%M:%S')
+trainingdata$starttime <- as.POSIXct(as.character(trainingdata$starttime), format = '%m/%d/%Y %H:%M:%S')
+trainingdata$stoptime <- as.POSIXct(as.character(trainingdata$stoptime), format = '%m/%d/%Y %H:%M:%S')
