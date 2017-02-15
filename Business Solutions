@@ -1,0 +1,25 @@
+#Problem 1: stations to increase capacity
+
+
+#Problem 2: identifying if certain bikes are taking up more of maintenance
+#Grouping by bikeID
+by.id <- test %>%
+  group_by(bikeid) %>%
+  summarise(total.duration = sum(tripduration), num.uses = n())
+
+#Take smaller sample of data so plots are readable
+sample <- sample_n(by.id, 100)
+
+#Number of Uses
+#Mean and Medain pretty similar for number of uses
+summary(sample$num.uses)
+hist(sample$num.uses, 100, col="black")
+qqnorm(sample$num.uses);qqline(sample$num.uses, col = 2)
+shapiro.test(sample$num.uses)
+
+#Total Trip Distance 
+#Strong skew of data to right
+summary(sample$total.duration)
+hist(sample$total.duration, 100, col="black")
+qqnorm(sample$total.duration);qqline(sample$total.duration, col = 2)
+shapiro.test(sample$total.duration)
