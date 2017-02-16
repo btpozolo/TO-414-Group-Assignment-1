@@ -74,7 +74,7 @@ library("ggmap")
 
 #get map base
 source = "google"
-NYCmap <- get_map("New York City",zoom=14,maptype="roadmap",source= source)
+NYCmap <- get_map("New York City",zoom=13,maptype="roadmap",source= source)
 
 #Add station point
 ggmap(NYCmap) + geom_point(aes(x=start.station.longitude,y= start.station.latitude,color=tripduration),data=trainingdata) + geom_point(size=3,alpha=0.3)
