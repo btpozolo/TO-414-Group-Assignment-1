@@ -68,3 +68,17 @@ trainingdata <- sample_frac(citibike2k16, 0.01)
 #Reformatting Time
 trainingdata$starttime <- as.POSIXct(as.character(trainingdata$starttime), format = '%m/%d/%Y %H:%M:%S')
 trainingdata$stoptime <- as.POSIXct(as.character(trainingdata$stoptime), format = '%m/%d/%Y %H:%M:%S')
+
+#ggmap
+library("ggmap")
+
+#get map base
+source = "google"
+NYCmap <- get_map("New York City",zoom=14,maptype="roadmap",source= source)
+
+#Add station point
+ggmap(NYCmap) + geom_point(aes(x=start.station.latitude,y= start.station.longitude,color=tripduration),data=M1) + geom_point(size=3,alpha=0.3)
+
+
+
+
