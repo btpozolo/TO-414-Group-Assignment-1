@@ -1,3 +1,11 @@
+library(dtplyr)
+df <- data.table(A=1:5, B=c("Eric" , "Blake", "Sam", "Fred", "Roger"))
+test <- data.frame(names = c("Blake", "Eric", "Blake", "Blake", "Sam", "Fred"))
+test$hour <- c(1,1,1,2,2,2)
+
+df$C <- sum(test$names == "Blake")  #adds new column based on filter, need to replace blake with previous column
+
+
 #Problem 1: stations to increase capacity
 
 
