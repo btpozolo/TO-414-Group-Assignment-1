@@ -69,6 +69,9 @@ trainingdata <- sample_frac(citibike2k16, 0.01)
 trainingdata$starttime <- as.POSIXct(as.character(trainingdata$starttime), format = '%m/%d/%Y %H:%M:%S')
 trainingdata$stoptime <- as.POSIXct(as.character(trainingdata$stoptime), format = '%m/%d/%Y %H:%M:%S')
 
+#creating collumn for each station
+station <- unique(trainingdata["start.station.name"])
+
 #ggmap
 library("ggmap")
 
