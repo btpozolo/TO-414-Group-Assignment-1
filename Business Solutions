@@ -23,3 +23,15 @@ summary(sample$total.duration)
 hist(sample$total.duration, 100, col="black")
 qqnorm(sample$total.duration);qqline(sample$total.duration, col = 2)
 shapiro.test(sample$total.duration)
+
+#Plot of trip Duration  by bikeID
+max <- max(by.id$total.duration) #to try to set this as upper bound of graph
+by.id <- by.id[order(by.id$total.duration, decreasing = T), ]  # sort
+by.id$bikeid <- factor(by.id$bikeid, levels = by.id$bikeid)  # to retain the order in plot.
+ggplot(by.id, aes(by.id$bikeid, by.id$total.duration)) + geom_bar(stat="identity") + ylim(0, 200000) #need to redo upper limit and maybe plot the average line
+
+#Plot of NumTrips  by bikeID
+max <- max(by.id$num.uses) #to try to set this as upper bound of graph
+by.id <- by.id[order(by.id$num.uses, decreasing = T), ]  # sort
+by.id$bikeid <- factor(by.id$bikeid, levels = by.id$bikeid)  # to retain the order in plot.
+ggplot(by.id, aes(by.id$bikeid, by.id$num.uses)) + geom_bar(stat="identity") + ylim(0, 20) #need to redo upper limit and maybe plot the average line
