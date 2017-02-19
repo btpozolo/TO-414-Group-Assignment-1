@@ -25,7 +25,8 @@ hist(sample$num.uses, 100, col="black")
 qqnorm(sample$num.uses);qqline(sample$num.uses, col = 2)
 shapiro.test(sample$num.uses)
 
-#Total Trip Distance 
+#Total Trip Distance
+
 #Strong skew of data to right
 summary(sample$total.duration)
 hist(sample$total.duration, 100, col="black")
@@ -33,11 +34,24 @@ qqnorm(sample$total.duration);qqline(sample$total.duration, col = 2)
 shapiro.test(sample$total.duration)
 
 #Plot of trip Duration  by bikeID
-max <- max(by.id$total.duration) #to try to set this as upper bound of graph
+
+m <- max(by.id$total.duration) #to try to set this as upper bound of graph
+av <- mean(by.id$total.duration)
+df2 <- data.frame(average = av)
+med <- median(by.id$total.duration)
+df3 <- data.frame(median = med)
 by.id <- by.id[order(by.id$total.duration, decreasing = T), ]  # sort
 by.id$bikeid <- factor(by.id$bikeid, levels = by.id$bikeid)  # to retain the order in plot.
-ggplot(by.id, aes(by.id$bikeid, by.id$total.duration)) + geom_bar(stat="identity") + ylim(0, 200000) #need to redo upper limit and maybe plot the average line
-
+ggplot(by.id, aes(bikeid, total.duration,)) +
+  geom_point(stat="identity") + 
+  ylim(0, m + 1000) + 
+  theme(axis.ticks.x = element_blank(),axis.text.x = element_blank()) + 
+  geom_hline(data = df2, aes(yintercept = average, linetype = "dashed")) +
+  geom_hline(data = df3 , aes(yintercept = median, linetype = "solid")) + 
+  scale_linetype_manual(name = "Legend", values = c("dashed", "solid"), labels = c("Average", "Median"))
+  
+  
 #Plot of NumTrips  by bikeID (can be used with full data)
+
 by.id <- by.id[order(by.id$num.uses, decreasing = T), ]  #sort (can delete)
 qplot(num.uses, data=by.id, geom="histogram", binwidth=1, main = "Number of Trips per Bike", xlab = "Number of Trips", ylab = "Number of Bikes")
