@@ -38,8 +38,6 @@ by.id <- by.id[order(by.id$total.duration, decreasing = T), ]  # sort
 by.id$bikeid <- factor(by.id$bikeid, levels = by.id$bikeid)  # to retain the order in plot.
 ggplot(by.id, aes(by.id$bikeid, by.id$total.duration)) + geom_bar(stat="identity") + ylim(0, 200000) #need to redo upper limit and maybe plot the average line
 
-#Plot of NumTrips  by bikeID
-max <- max(by.id$num.uses) #to try to set this as upper bound of graph
-by.id <- by.id[order(by.id$num.uses, decreasing = T), ]  # sort
-by.id$bikeid <- factor(by.id$bikeid, levels = by.id$bikeid)  # to retain the order in plot.
-ggplot(by.id, aes(by.id$bikeid, by.id$num.uses)) + geom_bar(stat="identity") + ylim(0, 20) #need to redo upper limit and maybe plot the average line
+#Plot of NumTrips  by bikeID (can be used with full data)
+by.id <- by.id[order(by.id$num.uses, decreasing = T), ]  #sort (can delete)
+qplot(num.uses, data=by.id, geom="histogram", binwidth=1, main = "Number of Trips per Bike", xlab = "Number of Trips", ylab = "Number of Bikes")
