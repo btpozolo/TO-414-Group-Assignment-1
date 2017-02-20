@@ -1,1 +1,75 @@
+#Unpacking data
+
+library(dplyr)
+
+temp <- tempfile()
+download.file("https://s3.amazonaws.com/tripdata/201601-citibike-tripdata.zip", temp)
+M1 <- read.csv(unz(temp, "201601-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+#Removing all monthly variables
+rm(list=setdiff(ls(), "M1"))
+
+#using just M1
+trainingdata <- M1
+
+#Reformatting Time
+trainingdata$starttime <- as.POSIXct(as.character(trainingdata$starttime), format = '%m/%d/%Y %H:%M:%S')
+trainingdata$stoptime <- as.POSIXct(as.character(trainingdata$stoptime), format = '%m/%d/%Y %H:%M:%S')
+
+#further reformatting time variable
+trainingdata$day <- strftime(trainingdata$starttime, "%d")
+trainingdata$month <- strftime(trainingdata$starttime, "%m")
+trainingdata$year <- strftime(trainingdata$starttime, "%Y")
+trainingdata$hour <- strftime(trainingdata$starttime, "%H")
+trainingdata$minute <- strftime(trainingdata$starttime, "%M")
+trainingdata$second <- strftime(trainingdata$starttime, "%S")
+
+#start station frequency
+by.start <- trainingdata %>%
+  group_by(start.station.id, start.station.longitude, start.station.latitude) %>% summarise(n = n())
+by.start <- as.data.frame(by.start)
+names(by.start) <- c("station.id", "longitude", "latitude", "frequency")
+
+#end station frequency
+by.end <- trainingdata %>%
+    group_by(end.station.id, end.station.longitude, end.station.latitude) %>% summarise(n=n())
+by.end <- as.data.frame(by.end)
+names(by.end) <-  c("station.id", "longitude", "latitude", "frequency")
+
+#merging data to find most frequent
+by.start.end <- merge(by.start, by.end, by = "station.id")
+by.start.end$tot.freq <- by.start.end$frequency.x + by.start.end$frequency.y
+by.start.end$longitude.y <- NULL
+by.start.end$latitude.y <- NULL
+
+#pulling top 50 most frequent stations
+m1 <- by.start.end %>%
+  select(station.id, longitude.x, latitude.x, tot.freq) %>%
+  arrange(desc(tot.freq))
+m2 <- m1[1:50, ]
+
+
+#ggmap
+library("ggmap")
+
+#get map base
+source = "google"
+NYCmap <- get_map("New York City",zoom=13,maptype="roadmap",source= source)
+
+#Dot Plot of top 50 most popular stations
+ggmap(NYCmap) + geom_point(aes(x=longitude.x,y=latitude.x, size = tot.freq, color=tot.freq), data=m2) + geom_point(size=5,alpha=0.3) 
+
+#attempt at a heat map, looks kind of weird
+ggmap(NYCmap) + stat_density2d(data=by.start.end, aes(x=longitude.x, y=latitude.x, fill = tot.freq, alpha = .1), size=.01, bins = 16, geom="polygon") + scale_fill_gradient(low = "green", high = "red") + scale_alpha(range = c(0, 0.1), guide = FALSE) 
+
+#merging start and end station
+n1 <- trainingdata
+n1$station.id <- paste(n1$start.station.id, n1$end.station.id, sep="_")
+
+#Finding route frequency
+by.route <- n1 %>%
+  group_by(station.id, start.station.latitude, start.station.longitude, end.station.latitude, end.station.longitude) %>% summarise(freq = n())
+by.route <- as.data.frame(by.route)
+View(by.route)
 
