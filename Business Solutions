@@ -1,12 +1,24 @@
 library(dtplyr)
+
+#For testing data Combine 
+
+#TO BE DELETED
+
 df <- data.table(A=1:5, B=c("Eric" , "Blake", "Sam", "Fred", "Roger"))
 test <- data.frame(names = c("Blake", "Eric", "Blake", "Blake", "Sam", "Fred"))
 test$hour <- c(1,1,1,2,2,2)
-
 df$C <- sum(test$names == "Blake")  #adds new column based on filter, need to replace blake with previous column
 
+#END OF TO BE DELETED
 
 #Problem 1: stations to increase capacity
+
+
+
+
+
+
+
 
 
 #Problem 2: identifying if certain bikes are taking up more of maintenance
@@ -15,26 +27,26 @@ by.id <- test %>%
   group_by(bikeid) %>%
   summarise(total.duration = sum(tripduration), num.uses = n())
 
-#Take smaller sample of data so plots are readable
+#Smaller sample of 100 for histogram
 sample <- sample_n(by.id, 100)
 
-#Number of Uses
 #Mean and Medain pretty similar for number of uses
 summary(sample$num.uses)
 hist(sample$num.uses, 100, col="black")
 qqnorm(sample$num.uses);qqline(sample$num.uses, col = 2)
 shapiro.test(sample$num.uses)
 
-#Total Trip Distance
-
 #Strong skew of data to right
 summary(sample$total.duration)
 hist(sample$total.duration, 100, col="black")
-qqnorm(sample$total.duration);qqline(sample$total.duration, col = 2)
+qqnorm(sample$total.duration); qqline(sample$total.duration, col = 2) #shows that the data set may not be a normal distribution
 shapiro.test(sample$total.duration)
 
-#Plot of trip Duration  by bikeID
+#Plot of NumTrips  by bikeID (can be used with full data)
+by.id <- by.id[order(by.id$num.uses, decreasing = T), ]  #sort (can delete)
+qplot(num.uses, data=by.id, geom="histogram", binwidth=1, main = "Number of Trips per Bike", xlab = "Number of Trips", ylab = "Number of Bikes")
 
+#Plot of trip Duration  by bikeID
 m <- max(by.id$total.duration) #to try to set this as upper bound of graph
 av <- mean(by.id$total.duration)
 df2 <- data.frame(average = av)
@@ -42,16 +54,13 @@ med <- median(by.id$total.duration)
 df3 <- data.frame(median = med)
 by.id <- by.id[order(by.id$total.duration, decreasing = T), ]  # sort
 by.id$bikeid <- factor(by.id$bikeid, levels = by.id$bikeid)  # to retain the order in plot.
-ggplot(by.id, aes(bikeid, total.duration,)) +
+ggplot(by.id, aes(bikeid, total.duration)) +
+  ggtitle("Total Trip Duration by Bike ID")+
+  xlab("Uniqe Bike ID")+
+  ylab("Total Duration (min)")+
   geom_point(stat="identity") + 
   ylim(0, m + 1000) + 
   theme(axis.ticks.x = element_blank(),axis.text.x = element_blank()) + 
   geom_hline(data = df2, aes(yintercept = average, linetype = "dashed")) +
   geom_hline(data = df3 , aes(yintercept = median, linetype = "solid")) + 
   scale_linetype_manual(name = "Legend", values = c("dashed", "solid"), labels = c("Average", "Median"))
-  
-  
-#Plot of NumTrips  by bikeID (can be used with full data)
-
-by.id <- by.id[order(by.id$num.uses, decreasing = T), ]  #sort (can delete)
-qplot(num.uses, data=by.id, geom="histogram", binwidth=1, main = "Number of Trips per Bike", xlab = "Number of Trips", ylab = "Number of Bikes")
