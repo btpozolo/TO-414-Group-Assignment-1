@@ -55,7 +55,7 @@ library("ggmap")
 
 #get map base
 source = "google"
-NYCmap <- get_map("New York City",zoom=13,maptype="roadmap",source= source)
+NYCmap <- get_map("New York City",zoom=15,maptype="roadmap",source= source)
 
 #Dot Plot of top 50 most popular stations
 ggmap(NYCmap) + geom_point(aes(x=longitude.x,y=latitude.x, size = tot.freq, color=tot.freq), data=m2) + geom_point(size=5,alpha=0.3) 
@@ -71,5 +71,39 @@ n1$station.id <- paste(n1$start.station.id, n1$end.station.id, sep="_")
 by.route <- n1 %>%
   group_by(station.id, start.station.latitude, start.station.longitude, end.station.latitude, end.station.longitude) %>% summarise(freq = n())
 by.route <- as.data.frame(by.route)
-View(by.route)
 
+p1 <- by.route %>%
+  select(station.id, start.station.longitude, start.station.latitude, end.station.longitude, end.station.latitude, freq) %>%
+  arrange(desc(freq))
+
+p1 <- p1[1:1000, ]
+View(p1)
+
+ggmap(NYCmap) +
+  geom_polygon(data=p1, aes(x=start.station.longitude, y = start.station.latitude), color = "blue") +
+  geom_point(data = p1, aes(x=start.station.longitude, y = start.station.latitude), color = "black", size = 5) +
+  geom_point(data = p1, aes(x = end.station.longitude, y = end.station.latitude, color = "yellow", size = 4)) +
+  coord_fixed(1.3)
+
+ggmap(NYCmap) +
+  geom_polygon(data = p1,
+               aes(x= start.station.longitude, y = start.station.latitude, group = station.id),
+               fill = "#080808", color = "#080808", alpha = 0.5) +
+  geom_leg(data = p1,
+           aes(x = start.station.longitude, xend = end.station.longitude,
+           y = start.station.latitude, yend = end.station.latitude,
+           size = freq, color = freq, alpha = freq)) + 
+  geom_point(data = p1,
+             aes(x = start.station.longitude, y = start.station.latitude),
+             color = "#ffa500", alpha = 0.5, size = 1) +
+  scale_size_continuous(range = c(0.3, 3)) + 
+  scale_color_gradient(low = "#555555", high = "#ffffff", trans = "sqrt") +
+  scale_alpha_continuous(range = c(0.6, 1), trans = "sqrt")
+
+c <- ggplot(p1, aes(station.id, freq))
+c + geom_bar(stat = "identity")
+
+
+
+
+```
