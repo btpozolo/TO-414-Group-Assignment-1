@@ -71,10 +71,12 @@ trainingdata$stoptime <- as.POSIXct(as.character(trainingdata$stoptime), format 
 
 #creating column for each station
 station <- unique(trainingdata["start.station.name"])
+#I still cant find the way to pull unique elements from both column
 #creating hour column
 hour <- data.frame(hour = c("1","2","3","4","5","6","7","8","9","10","11","11","12","13","14","15","16","17","18","19","20","21","22","23","24"))
 #put them together
 station.and.hour <- merge(station,hour, sort = F)
+#Merge station and inflow and outflow >> problems how to put the rows that don't have data to 0
 
 #count trip by hour
 trip.by.hour.inflow <- count(trainingdata, start.station.name, starttime = cut(starttime, breaks = "hour"))
