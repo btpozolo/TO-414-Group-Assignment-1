@@ -109,6 +109,13 @@ c + geom_bar(stat = "identity")
 ```
 #Part two
 
+#ggmap
+library("ggmap")
+
+#get map base
+source = "google"
+NYCmap <- get_map("New York City",zoom=12,maptype="roadmap",source= source)
+
 #Finding total outflows and inflows for each station
 trip.total.inflow <- count(trainingdata, end.station.name)
 trip.total.outflow <- count(trainingdata, start.station.name)
@@ -131,6 +138,13 @@ trip.total.def.50 <- trip.total.def[1:50,]
 trip.total.sur <- trip.total %>% arrange(desc(netflow))
 trip.total.sur.50 <- trip.total.sur[1:50,]
 
+
+#To create map with both deficit and surplus we combind all the rows together
+trip.total.defsur <- rbind(trip.total.sur.50,trip.total.def.50)
+
+#map
+ggmap(NYCmap) + 
+  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.total.defsur)
 
 #Finding outflow and inflow by month for each station
 trip.by.month.inflow <- count(trainingdata, end.station.name, stoptime = cut(stoptime, breaks ="month"))
