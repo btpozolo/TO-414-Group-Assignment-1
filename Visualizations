@@ -126,7 +126,9 @@ trip.total$station.longitude <- location$start.station.longitude[match(trip.tota
 
 #Plot the top 50 stations with the most deficit and surplus on the map
 
-
+#Pull 50 top stations with the most deficit
+trip.total.def <- trip.total %>% arrange(netflow)
+trip.total.sur <- trip.total %>% arrange(desc(netflow))
 
 
 #Finding outflow and inflow by month for each station
