@@ -107,3 +107,58 @@ c + geom_bar(stat = "identity")
 
 
 ```
+#Part two
+
+#Finding total outflows and inflows for each station
+trip.total.inflow <- count(trainingdata, end.station.name)
+trip.total.outflow <- count(trainingdata, start.station.name)
+trip.total <- merge(trip.total.inflow, trip.total.outflow, by = c(1))
+
+#Finding total surplus or deficit for each station
+trip.total$netflow <- trip.total$n.x - trip.total$n.y
+
+names(trip.total) <- c("station.name","inflow","outflow","netflow")
+
+#Merge to get location of each station
+location <- unique(trainingdata[c("start.station.name","start.station.latitude","start.station.longitude")])
+trip.total$station.latitude <- location$start.station.latitude[match(trip.total$station.name, location$start.station.name)]
+trip.total$station.longitude <- location$start.station.longitude[match(trip.total$station.name, location$start.station.name)]
+
+#Plot the top 50 stations with the most deficit and surplus on the map
+
+
+
+
+#Finding outflow and inflow by month for each station
+trip.by.month.inflow <- count(trainingdata, end.station.name, stoptime = cut(stoptime, breaks ="month"))
+trip.by.month.outflow <- count(trainingdata, start.station.name, starttime = cut(starttime, breaks= "month"))
+
+#Finding surplus or deficit by month for each station
+trip.by.month <- merge(trip.by.month.inflow, trip.by.month.outflow, by = c(1,2))
+trip.by.month$netflow <- trip.by.month$n.x - trip.by.month$n.y
+  
+#Finding outflow and inflow by weekends and weekdays
+
+#First we create the columns to see what day it is
+trainingdata.date <- trainingdata %>% mutate(weekday = wday(starttime, label = T, abbr = F))
+#Then we divide them into weekend or weekday
+trainingdata.date$daytype <- ifelse(trainingdata.date$weekday == "Saturday"|trainingdata.date$weekday == "Sunday",'weekend','weekday')
+#Finding outflow and inflow by type of day for each station
+trip.by.day.inflow <- count(trainingdata.date, end.station.name, daytype)
+trip.by.day.outflow <- count(trainingdata.date, start.station.name, daytype)
+
+names(trip.by.day) <- c("station.name","inflow","outflow","netflow")
+trip.by.day$station.latitude <- location$start.station.latitude[match(trip.by.day$station.name, location$start.station.name)]
+trip.by.day$station.longitude <- location$start.station.longitude[match(trip.by.day$station.name, location$start.station.name)]
+
+#Finding surplus or deficit by daytype for each station
+trip.by.day <- merge(trip.by.day.inflow, trip.by.day.outflow, by = c(1,2))
+trip.by.day$netflow <- trip.by.day$n.x - trip.by.day$n.y
+
+names(trip.by.day) <- c("station.name","inflow","outflow","netflow")
+
+trip.by.day$station.latitude <- location$start.station.latitude[match(trip.by.day$station.name, location$start.station.name)]
+trip.by.day$station.longitude <- location$start.station.longitude[match(trip.by.day$station.name, location$start.station.name)]
+
+
+
