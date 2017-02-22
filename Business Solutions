@@ -1,6 +1,7 @@
 library(dtplyr)
 library(ggplot2)
 library(lubridate)
+library(scales)
 
 #Problem 1: stations to increase capacity
 
