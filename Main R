@@ -93,8 +93,5 @@ NYCmap <- get_map("New York City",zoom=13,maptype="roadmap",source= source)
 #Add station point
 ggmap(NYCmap) + geom_point(aes(x=start.station.longitude,y= start.station.latitude,color=tripduration),data=trainingdata) + geom_point(size=3,alpha=0.3)
 
-#Example of graph
-ggplot(nyc.time.period.by.month, aes(x= month, y = avg.arr_delay.time.month, fill = time_period)) + geom_col(position = "dodge")+ylab("average delay (hour)")+ggtitle("Average delay time by departing time period of the day by months")
-
 
 
