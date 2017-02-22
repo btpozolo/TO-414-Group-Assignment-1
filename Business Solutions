@@ -13,7 +13,28 @@ df$C <- sum(test$names == "Blake")  #adds new column based on filter, need to re
 
 #Problem 1: stations to increase capacity
 
+#Reorangize data by factors 
+trainingdata$start.station.name <- as.factor(trainingdata$start.station.name)
 
+trainingdata$end.station.name<- as.factor(trainingdata$end.station.name)
+
+#Sort by stations and months, inflow is the numbers of bikes return, outflow is the numbers of bikes borrow. 
+
+trip.by.month.inflow <- count(trainingdata, end.station.name, stoptime = cut(stoptime, breaks = "month"))
+ 
+trip.by.month.outflow <- count(trainingdata, start.station.name, starttime = cut(starttime, breaks = "month")) 
+
+#Merge the inflow and outflow to show deficit 
+
+trip.by.month <- merge(trip.by.month.inflow, trip.by.month.outflow, by = c(1,2))
+
+trip.by.month$deficit <- trip.by.month$n.x - trip.by.month$n.y
+
+#Draw graphs to show the top three stations with deficits and surplus by months 
+library(ggplot2)
+library(lubridate)
+
+trip.by.month$month <- month(trip.by.month$stoptime)
 
 
 
