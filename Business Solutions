@@ -1,15 +1,6 @@
 library(dtplyr)
-
-#For testing data Combine 
-
-#TO BE DELETED
-
-df <- data.table(A=1:5, B=c("Eric" , "Blake", "Sam", "Fred", "Roger"))
-test <- data.frame(names = c("Blake", "Eric", "Blake", "Blake", "Sam", "Fred"))
-test$hour <- c(1,1,1,2,2,2)
-df$C <- sum(test$names == "Blake")  #adds new column based on filter, need to replace blake with previous column
-
-#END OF TO BE DELETED
+library(ggplot2)
+library(lubridate)
 
 #Problem 1: stations to increase capacity
 
@@ -31,8 +22,7 @@ trip.by.month <- merge(trip.by.month.inflow, trip.by.month.outflow, by = c(1,2))
 trip.by.month$deficit <- trip.by.month$n.x - trip.by.month$n.y
 
 #Draw graphs to show the top three stations with deficits and surplus by months 
-library(ggplot2)
-library(lubridate)
+
 
 trip.by.month$month <- month(trip.by.month$stoptime)
 
@@ -40,48 +30,57 @@ trip.by.month$month <- month(trip.by.month$stoptime)
 
 
 
+##Bike Maintenance
+###By Number of Trips
+Bike maintenance bills are piling up. Client thinks that this is because some bikes are being used a lot more than other bikes. Can you check on this assumption?
 
+To check on if certain bikes are being used more than others, we first looked into the number of unique trips taken by each bike. 
+If the bikes are being used roughly the same amount of times, we would expect the histogram of number of uses to be roughly normal.
 
-#Problem 2: identifying if certain bikes are taking up more of maintenance
+```{r}
+#TODO make sure the t data is full data set
+
 #Grouping by bikeID
-by.id <- test %>%
+by.id <- t %>%
   group_by(bikeid) %>%
-  summarise(total.duration = sum(tripduration), num.uses = n())
+  summarise(total.duration = sum(tripduration)/60, num.uses = n())
 
-#Smaller sample of 100 for histogram
-sample <- sample_n(by.id, 100)
+#Plot of NumTrips  by bikeID
+qplot(num.uses, data=by.id, geom="histogram", main = "Total Number of Trips per Bike", xlab = "Total Number of Trips (per bike)", ylab = "Amount of Bikes") +
+   scale_y_continuous(labels = comma) + 
+   scale_x_continuous(labels = comma)
+```
+The above histogram shows that the data shows more of a bimodal distribution, which could indicate that there is some other factors causing certian bikes to be used more frequently than others. 
+
+###By Trip Duration
+Next we looked at the total trip durations of each bike to see if any patterns emerged. We however think that frequency of use (as shown above) would be more indicative of difference in usage patterns than the trip durations. 
+```{r setup, include=FALSE}
+#Smaller sample of 100 for histogram (replace with by id)
+# sample <- sample_n(by.id, 100)
 
 #Mean and Medain pretty similar for number of uses
-summary(sample$num.uses)
-hist(sample$num.uses, 100, col="black")
-qqnorm(sample$num.uses);qqline(sample$num.uses, col = 2)
-shapiro.test(sample$num.uses)
+# summary(by.id$num.uses)
+# hist(sample$num.uses, 100, col="black", main = "Histogram of Sample Number of Uses", xlab = "Number of Uses (per unique bike)")
 
-#Strong skew of data to right
-summary(sample$total.duration)
-hist(sample$total.duration, 100, col="black")
-qqnorm(sample$total.duration); qqline(sample$total.duration, col = 2) #shows that the data set may not be a normal distribution
-shapiro.test(sample$total.duration)
 
-#Plot of NumTrips  by bikeID (can be used with full data)
-by.id <- by.id[order(by.id$num.uses, decreasing = T), ]  #sort (can delete)
-qplot(num.uses, data=by.id, geom="histogram", binwidth=1, main = "Number of Trips per Bike", xlab = "Number of Trips", ylab = "Number of Bikes")
+qplot(total.duration, data=by.id, geom="histogram", bins = 500, main = "Total Trip Time per Bike", xlab = "Total Trip Time (in minutes)", ylab = "Amount of Bikes") +
+   scale_y_continuous(labels = comma) + 
+   scale_x_continuous(labels = comma)
 
-#Plot of trip Duration  by bikeID
-m <- max(by.id$total.duration) #to try to set this as upper bound of graph
-av <- mean(by.id$total.duration)
-df2 <- data.frame(average = av)
-med <- median(by.id$total.duration)
-df3 <- data.frame(median = med)
-by.id <- by.id[order(by.id$total.duration, decreasing = T), ]  # sort
-by.id$bikeid <- factor(by.id$bikeid, levels = by.id$bikeid)  # to retain the order in plot.
-ggplot(by.id, aes(bikeid, total.duration)) +
-  ggtitle("Total Trip Duration by Bike ID")+
-  xlab("Uniqe Bike ID")+
-  ylab("Total Duration (min)")+
-  geom_point(stat="identity") + 
-  ylim(0, m + 1000) + 
-  theme(axis.ticks.x = element_blank(),axis.text.x = element_blank()) + 
-  geom_hline(data = df2, aes(yintercept = average, linetype = "dashed")) +
-  geom_hline(data = df3 , aes(yintercept = median, linetype = "solid")) + 
-  scale_linetype_manual(name = "Legend", values = c("dashed", "solid"), labels = c("Average", "Median"))
+#QQ plot to show non-normal distribution
+qqnorm(by.id$total.duration); qqline(by.id$total.duration, col = 2) 
+```
+These graphs show that the trip time duration per unique bike does not follow a normal distribution, however a nonlinear distribution is more appropriate. Also, you can note from the above graphs that is appears that the trip time is skewed right as should be expected with outlier longer rides. 
+
+###Total Trip Time and Number of Trips
+
+To show the relationship between number of trips taken and the total trip time by each bike, we created the following scatterplot. This graph helps show why the total trip time would not be a normal distribution as well as helping to see how frequent most bikes are used and how long they are used for.
+```{r}
+#To show the correlation between number of trips and total distance
+p <- ggplot(by.id, aes(by.id$num.uses, by.id$total.duration))
+p + geom_point(alpha = 1/20) +ggtitle("Total Trip Duration by Number of Trips")+
+  xlab("Number of Trips Taken")+
+  ylab("Aggregate Trip Duration (min)")+
+  scale_y_continuous(labels = comma) + 
+  scale_x_continuous(labels = comma)
+```
