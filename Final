@@ -1,0 +1,86 @@
+(all library packages used here)
+
+(insert data cleaning here)
+
+#Pattern Analysis
+##Ride Volume
+###By Time of Day
+
+###By Day of Week
+
+###By Month of Year
+
+##Stations
+###Asymetric Traffic
+
+###Longest Rides
+
+
+
+
+
+#Visualizations
+##Popular Stations on Map
+
+##Station with surplus and deficit
+
+
+#Business Issues
+##Station Capacity
+
+
+
+##Bike Maintenance
+###By Number of Trips
+Bike maintenance bills are piling up. Client thinks that this is because some bikes are being used a lot more than other bikes. Can you check on this assumption?
+
+To check on if certain bikes are being used more than others, we first looked into the number of unique trips taken by each bike. 
+If the bikes are being used roughly the same amount of times, we would expect the histogram of number of uses to be roughly normal.
+
+```{r}
+#TODO make sure the t data is full data set
+
+#Grouping by bikeID
+by.id <- t %>%
+  group_by(bikeid) %>%
+  summarise(total.duration = sum(tripduration)/60, num.uses = n())
+
+#Plot of NumTrips  by bikeID
+qplot(num.uses, data=by.id, geom="histogram", main = "Total Number of Trips per Bike", xlab = "Total Number of Trips (per bike)", ylab = "Amount of Bikes") +
+   scale_y_continuous(labels = comma) + 
+   scale_x_continuous(labels = comma)
+```
+The above histogram shows that the data shows more of a bimodal distribution, which could indicate that there is some other factors causing certian bikes to be used more frequently than others. 
+
+###By Trip Duration
+Next we looked at the total trip durations of each bike to see if any patterns emerged. We however think that frequency of use (as shown above) would be more indicative of difference in usage patterns than the trip durations. 
+```{r setup, include=FALSE}
+#Smaller sample of 100 for histogram (replace with by id)
+# sample <- sample_n(by.id, 100)
+
+#Mean and Medain pretty similar for number of uses
+# summary(by.id$num.uses)
+# hist(sample$num.uses, 100, col="black", main = "Histogram of Sample Number of Uses", xlab = "Number of Uses (per unique bike)")
+
+
+qplot(total.duration, data=by.id, geom="histogram", bins = 500, main = "Total Trip Time per Bike", xlab = "Total Trip Time (in minutes)", ylab = "Amount of Bikes") +
+   scale_y_continuous(labels = comma) + 
+   scale_x_continuous(labels = comma)
+
+#QQ plot to show non-normal distribution
+qqnorm(by.id$total.duration); qqline(by.id$total.duration, col = 2) 
+```
+These graphs show that the trip time duration per unique bike does not follow a normal distribution, however a nonlinear distribution is more appropriate. Also, you can note from the above graphs that is appears that the trip time is skewed right as should be expected with outlier longer rides. 
+
+###Total Trip Time and Number of Trips
+
+To show the relationship between number of trips taken and the total trip time by each bike, we created the following scatterplot. This graph helps show why the total trip time would not be a normal distribution as well as helping to see how frequent most bikes are used and how long they are used for.
+```{r}
+#To show the correlation between number of trips and total distance
+p <- ggplot(by.id, aes(by.id$num.uses, by.id$total.duration))
+p + geom_point(alpha = 1/20) +ggtitle("Total Trip Duration by Number of Trips")+
+  xlab("Number of Trips Taken")+
+  ylab("Aggregate Trip Duration (min)")+
+  scale_y_continuous(labels = comma) + 
+  scale_x_continuous(labels = comma)
+```
