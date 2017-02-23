@@ -4,7 +4,7 @@ library(lubridate)
 library(scales)
 
 #Problem 1: stations to increase capacity
-
+```{r}
 #Reorangize data by factors 
 trainingdata$start.station.name <- as.factor(trainingdata$start.station.name)
 
@@ -24,16 +24,11 @@ trip.by.month$deficit <- trip.by.month$n.x - trip.by.month$n.y
 
 #Draw graphs to show the top three stations with deficits and surplus by months 
 
-
 trip.by.month$month <- month(trip.by.month$stoptime)
-
-
-
-
+```
 
 ##Bike Maintenance
 ###By Number of Trips
-Bike maintenance bills are piling up. Client thinks that this is because some bikes are being used a lot more than other bikes. Can you check on this assumption?
 
 To check on if certain bikes are being used more than others, we first looked into the number of unique trips taken by each bike. 
 If the bikes are being used roughly the same amount of times, we would expect the histogram of number of uses to be roughly normal.
