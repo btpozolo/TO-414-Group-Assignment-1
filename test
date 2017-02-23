@@ -1,12 +1,13 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 #Unpacking data and libraries
 
 
 ```{r}
-knitr::opts_chunk$set(echo = TRUE)
 #EVERYONE PUT ANY LIBRARY YOU USE BELOW 
 
-library(plyr)
 library(ggplot2)
 library(dplyr)
 library(ggmap)
@@ -382,7 +383,7 @@ c <- ggplot(p1, aes(station.id, freq))
 c + geom_bar(stat = "identity")
 ```
 
-##Part 2?
+#Show stations with a surplus or deficit on a map
 ```{r}
 
 #get map base
@@ -427,7 +428,7 @@ source = "google"
 NYCmap <- get_map("New York City",zoom=12,maptype="roadmap",source= source)
 #map
 ggmap(NYCmap) + 
-  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.total.defsur)
+  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.total.defsur)+ggtitle("50 top surplus/decifit stations for 2016")
 
 
 #Finding outflow and inflow by month for each station
@@ -463,7 +464,7 @@ trip.by.jan.defsur <- rbind(trip.by.jan.def.50,trip.by.jan.sur.50)
 trip.by.jan.defsur$sur.or.def <- ifelse(trip.by.jan.defsur$netflow > 0, "surplus","deficit")
 #map
 ggmap(NYCmap) + 
-  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.jan.defsur)
+  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.jan.defsur)+ggtitle("January 2016 top 50 deficit/surplus stations")
   
 #Finding outflow and inflow by weekends and weekdays
 
@@ -509,7 +510,7 @@ trip.by.weekend.defsur <- rbind(trip.by.weekend.def.50,trip.by.weekend.sur.50)
 trip.by.weekend.defsur$sur.or.def <- ifelse(trip.by.weekend.defsur$netflow > 0, "surplus","deficit")
 #map
 ggmap(NYCmap) + 
-  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.weekend.defsur)
+  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.weekend.defsur)+ggtitle("Top 50 deficit/surplus stations on weekends")
 
 #For weekday
 trip.by.weekday <- trip.by.day[trip.by.day$day == "weekday",]
@@ -531,7 +532,7 @@ trip.by.weekday.defsur <- rbind(trip.by.weekday.def.50,trip.by.weekday.sur.50)
 trip.by.weekday.defsur$sur.or.def <- ifelse(trip.by.weekday.defsur$netflow > 0, "surplus","deficit")
 #map
 ggmap(NYCmap) + 
-  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.weekday.defsur)
+  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.weekday.defsur) + ggtitle("Top 50 deficit/surplus stations on weekends")
 ```
 
 
