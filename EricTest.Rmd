@@ -1,6 +1,6 @@
 ---
 title: "test"
-author: "Ink"
+author: "Eric Jensen"
 date: "February 12, 2017"
 output:
   html_document: 
@@ -209,7 +209,7 @@ barplot(m2$netuse,
         main = "Net Use in 2016",
         xlab = "Station_ID",
         ylab = "Net Use",
-        names.arg =c("435", "324", "491", "337", "492", "380", "477", "427", "465", "173")
+        names.arg =c("492", "324", "402", "477", "432", "426", "514", "3233", "415", "337")
 )
 
 
@@ -257,7 +257,7 @@ barplot(mw$netusew,
         main = "Net Use during Week Day",
         xlab = "Station_ID",
         ylab = "Net Use",
-        names.arg =c("477", "435", "492", "465", "427", "491", "324", "432", "456", "505")
+        names.arg =c("492", "477", "324", "432", "514", "510", "3233", "491", "415", "488")
 )
 ```
 ```{r}
@@ -273,7 +273,7 @@ barplot(mwe$netusewe,
         main = "Net Use during Weekend",
         xlab = "Station_ID",
         ylab = "Net Use",
-        names.arg =c("466", "161", "168", "445", "368", "467", "329", "212", "461", "259")
+        names.arg =c("459", "497", "168", "324", "309", "496", "348", "225", "147", "3145")
 )
 ```
 
@@ -292,7 +292,7 @@ barplot(tt$travel_duration,
         main = "Travel Duration by Top Ten Stations",
         xlab = "Station_ID",
         ylab = "Average Travel Duration",
-        names.arg =c("72", "79", "82", "445", "368", "467", "329", "212", "461", "259")
+        names.arg =c("3040", "3017", "3219", "3342", "3266", "3014", "2005", "3044", "255", "3041")
 )
 
 ```
