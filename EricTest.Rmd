@@ -583,6 +583,7 @@ The most common route is 2006_2006 which is Central Park S & 6th Ave. This makes
 
 
 ##Stations Capacity Issues
+
 ```{r}
 #Reorangize data by factors 
 trainingdata$start.station.name <- as.factor(trainingdata$start.station.name)
@@ -592,20 +593,83 @@ trainingdata$end.station.name<- as.factor(trainingdata$end.station.name)
 #Sort by stations and months, inflow is the numbers of bikes return, outflow is the numbers of bikes borrow. 
 
 trip.by.month.inflow <- count(trainingdata, end.station.name, stoptime = cut(stoptime, breaks = "month"))
- 
 trip.by.month.outflow <- count(trainingdata, start.station.name, starttime = cut(starttime, breaks = "month")) 
 
 #Merge the inflow and outflow to show deficit 
 
 trip.by.month <- merge(trip.by.month.inflow, trip.by.month.outflow, by = c(1,2))
+trip.by.month$deficit <- trip.by.month$n.y - trip.by.month$n.x
 
-trip.by.month$deficit <- trip.by.month$n.x - trip.by.month$n.y
-
-#Draw graphs to show the top three stations with deficits and surplus by months 
-
+#Add columns and reorganize data 
 trip.by.month$month <- month(trip.by.month$stoptime)
-```
+trip.by.month$month <- as.factor(trip.by.month$month)
 
+#Create subset for twelve months, and sort deficits by decresing order, and combine the data
+Jan.deficit <- subset(trip.by.month, trip.by.month$month == 1)
+Jan.deficit<-arrange(Jan.deficit,desc(deficit))
+Jan.deficit.top <- head(Jan.deficit,3)
+Feb.deficit <- subset(trip.by.month, trip.by.month$month == 2)
+Feb.deficit<-arrange(Feb.deficit,desc(deficit))
+Feb.deficit.top <- head(Feb.deficit,3)
+March.deficit <- subset(trip.by.month, trip.by.month$month == 3)
+March.deficit<-arrange(March.deficit,desc(deficit))
+March.deficit.top <- head(March.deficit,3)
+Apr.deficit <- subset(trip.by.month, trip.by.month$month == 4)
+Apr.deficit <- arrange(Apr.deficit,desc(deficit))
+Apr.deficit.top <- head(Apr.deficit,3)
+May.deficit <- subset(trip.by.month, trip.by.month$month == 5)
+May.deficit <- arrange(May.deficit,desc(deficit))
+May.deficit.top <- head(May.deficit,3)
+June.deficit <- subset(trip.by.month, trip.by.month$month == 6)
+June.deficit<-arrange(June.deficit,desc(deficit))
+June.deficit.top <- head(June.deficit,3)
+July.deficit <- subset(trip.by.month, trip.by.month$month == 7)
+July.deficit<-arrange(July.deficit,desc(deficit))
+July.deficit.top <- head(July.deficit,3)
+Aug.deficit <- subset(trip.by.month, trip.by.month$month == 8)
+Aug.deficit<-arrange(Aug.deficit,desc(deficit))
+Aug.deficit.top<-head(Aug.deficit,3)
+Sep.deficit <- subset(trip.by.month, trip.by.month$month == 9)
+Sep.deficit<-arrange(Sep.deficit,desc(deficit))
+Sep.deficit.top <- head(Sep.deficit,3)
+Oct.deficit <- subset(trip.by.month, trip.by.month$month == 10)
+Oct.deficit<-arrange(Oct.deficit,desc(deficit))
+Oct.deficit.top <- head(Oct.deficit,3)
+Nov.deficit <- subset(trip.by.month, trip.by.month$month == 11)
+Nov.deficit<-arrange(Nov.deficit,desc(deficit))
+Nov.deficit.top <- head(Nov.deficit,3)
+Dec.deficit <- subset(trip.by.month, trip.by.month$month == 12)
+Dec.deficit<-arrange(Dec.deficit,desc(deficit))
+Dec.deficit.top <- head(Dec.deficit,3)
+
+deficit.top <- rbind(Jan.deficit.top,Feb.deficit.top,March.deficit.top,Apr.deficit.top,May.deficit.top,June.deficit.top,July.deficit.top,Aug.deficit.top,Sep.deficit.top,Oct.deficit.top,Nov.deficit.top,Dec.deficit.top)
+
+deficit.top
+
+#The deficit.top shows the top three station name that would need to increase bike capacity by months with the highest deficits
+
+
+#Sort months data by quartely to easily read the graphs 
+
+deficit.1quarter.top <- rbind(Jan.deficit.top,Feb.deficit.top,March.deficit.top)
+deficit.2quarter.top <- rbind(Apr.deficit.top,May.deficit.top,June.deficit.top)
+deficit.3quarter.top <- rbind(July.deficit.top,Aug.deficit.top,Sep.deficit.top)
+deficit.4quarter.top <- rbind(Oct.deficit.top,Nov.deficit.top,Dec.deficit.top)
+
+#The graph could show in Jan, we need to increase bike capacity in Broadway & E 14 St, Broadway& W 41 St, and W 4 St & 7 Ave S. In Feb, we need to increase bike capacity in E 15 St & 3 Ave, Pershing Square North, 6 Ave & W 33 St. In March, we need to increase bike capacity in 11 Ave & W 41 St, Bayard St & Baxter St, E 3 St & 1 Ave .
+ggplot(deficit.1quarter.top,aes(x=month, y = deficit, fill = end.station.name)) + geom_col(position = "dodge") + ylab("Top three deficits station") + ggtitle("First Quarter top deficits stations by months")
+
+#This graph could show in April, we need to increase bike capacity in W 42 St & Dyer Ave, E 47 St & Park Ave, and Pershing Square North. In May, we need to increase bike capacity in W 42 St & Dyer Ave, Broadway & E 22 St, Penn Station Valet. In June, we need to increase bike capacity in Barrow St & Hudson St,  Penn Station Valet, Cleveland Pl & Spring.
+ggplot(deficit.2quarter.top,aes(x=month, y = deficit, fill = end.station.name)) + geom_col(position = "dodge") + ylab("Top three deficits station") + ggtitle("Second Quarter top deficits stations by months")
+
+
+#This graph could show in July, we need to increase bike capacity in W 42 St & Dyer Ave,Columbus Ave & W 72 St, and Barrow St & Hudson St.In August, we need to increase bike capacity in E 47 St & Park Ave,  Penn Station Valet, Cooper Square & E 7 St. In Sep, we need to increase bike capacity in Broadway & W 60 St, Penn Station Valet, and Pershing Square North. 
+ggplot(deficit.3quarter.top,aes(x=month, y = deficit, fill = end.station.name)) + geom_col(position = "dodge") + ylab("Top three deficits station") + ggtitle("Third Quarter top deficits stations by months")
+
+#This graph could show which station we need to increase bike capacity from Oct to December, it might not having data because bikers not borrowing bikes during winter time.  
+ggplot(deficit.4quarter.top,aes(x=month, y = deficit, fill = end.station.name)) + geom_col(position = "dodge") + ylab("Top three deficits station") + ggtitle("Fourth Quarter top deficits stations by months")
+
+```
 ##Bike Maintenance
 ###By Number of Trips
 
