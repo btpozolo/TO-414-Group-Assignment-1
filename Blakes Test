@@ -2,7 +2,11 @@
 title: "test"
 author: "Blake Pozolo"
 date: "February 12, 2017"
-output: html_document
+output:
+  html_document: 
+    toc: yes
+    toc_float: yes
+  pdf_document: default
 ---
 
 #Unpacking data and libraries
