@@ -708,12 +708,15 @@ by.id <- t %>%
 qplot(num.uses, data=by.id, geom="histogram", main = "Total Number of Trips per Bike", xlab = "Total Number of Trips (per bike)", ylab = "Amount of Bikes") +
    scale_y_continuous(labels = comma) + 
    scale_x_continuous(labels = comma)
+  
+#QQ Plot to test normality
+qqnorm(by.id$num.uses); qqline(by.id$num.uses, col = 2)
 ```
-The above histogram shows that the data shows more of a bimodal distribution, which could indicate that there is some other factors causing certian bikes to be used more frequently than others. 
+The above histogram shows that the data shows more of a somewhat normal distribution of usage, which could indicate that there is not reason to believe that there are other factors outside of chance causing certain bikes to be used more. 
 
 ###By Trip Duration
 Next we looked at the total trip durations of each bike to see if any patterns emerged. We however think that frequency of use (as shown above) would be more indicative of difference in usage patterns than the trip durations. 
-```{r setup, include=FALSE}
+```{r}
 #Smaller sample of 100 for histogram (replace with by id)
 # sample <- sample_n(by.id, 100)
 
@@ -722,7 +725,7 @@ Next we looked at the total trip durations of each bike to see if any patterns e
 # hist(sample$num.uses, 100, col="black", main = "Histogram of Sample Number of Uses", xlab = "Number of Uses (per unique bike)")
 
 
-qplot(total.duration, data=by.id, geom="histogram", bins = 500, main = "Total Trip Time per Bike", xlab = "Total Trip Time (in minutes)", ylab = "Amount of Bikes") +
+qplot(total.duration, data=by.id, geom="histogram", bins = 1000, main = "Total Trip Time per Bike", xlab = "Total Trip Time (in minutes)", ylab = "Amount of Bikes") +
    scale_y_continuous(labels = comma) + 
    scale_x_continuous(labels = comma)
 
