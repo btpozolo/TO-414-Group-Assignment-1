@@ -9,7 +9,7 @@ output:
   pdf_document: default
 ---
 
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
 
 library(plyr)
 library(ggplot2)
@@ -24,73 +24,84 @@ download.file("https://s3.amazonaws.com/tripdata/201601-citibike-tripdata.zip", 
 M1 <- read.csv(unz(temp, "201601-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-download.file("https://s3.amazonaws.com/tripdata/201602-citibike-tripdata.zip", temp)
-M2 <- read.csv(unz(temp, "201602-citibike-tripdata.csv"), header = T)
-unlink(temp)
+#download.file("https://s3.amazonaws.com/tripdata/201602-citibike-tripdata.zip", temp)
+#M2 <- read.csv(unz(temp, "201602-citibike-tripdata.csv"), header = T)
+#unlink(temp)
 
-download.file("https://s3.amazonaws.com/tripdata/201603-citibike-tripdata.zip", temp)
-M3 <- read.csv(unz(temp, "201603-citibike-tripdata.csv"), header = T)
-unlink(temp)
+#download.file("https://s3.amazonaws.com/tripdata/201603-citibike-tripdata.zip", temp)
+#M3 <- read.csv(unz(temp, "201603-citibike-tripdata.csv"), header = T)
+#unlink(temp)
 
-download.file("https://s3.amazonaws.com/tripdata/201604-citibike-tripdata.zip", temp)
-M4 <- read.csv(unz(temp, "201604-citibike-tripdata.csv"), header = T)
-unlink(temp)
+#download.file("https://s3.amazonaws.com/tripdata/201604-citibike-tripdata.zip", temp)
+#M4 <- read.csv(unz(temp, "201604-citibike-tripdata.csv"), header = T)
+#unlink(temp)
 
-download.file("https://s3.amazonaws.com/tripdata/201605-citibike-tripdata.zip", temp)
-M5 <- read.csv(unz(temp, "201605-citibike-tripdata.csv"), header = T)
-unlink(temp)
+#download.file("https://s3.amazonaws.com/tripdata/201605-citibike-tripdata.zip", temp)
+#M5 <- read.csv(unz(temp, "201605-citibike-tripdata.csv"), header = T)
+#unlink(temp)
 
-download.file("https://s3.amazonaws.com/tripdata/201606-citibike-tripdata.zip", temp)
-M6 <- read.csv(unz(temp, "201606-citibike-tripdata.csv"), header = T)
-unlink(temp)
+#download.file("https://s3.amazonaws.com/tripdata/201606-citibike-tripdata.zip", temp)
+#M6 <- read.csv(unz(temp, "201606-citibike-tripdata.csv"), header = T)
+#unlink(temp)
 
-download.file("https://s3.amazonaws.com/tripdata/201607-citibike-tripdata.zip", temp)
-M7 <- read.csv(unz(temp, "201607-citibike-tripdata.csv"), header = T)
-unlink(temp)
+#download.file("https://s3.amazonaws.com/tripdata/201607-citibike-tripdata.zip", temp)
+#M7 <- read.csv(unz(temp, "201607-citibike-tripdata.csv"), header = T)
+#unlink(temp)
  
-download.file("https://s3.amazonaws.com/tripdata/201608-citibike-tripdata.zip", temp)
-M8 <- read.csv(unz(temp, "201608-citibike-tripdata.csv"), header = T)
-unlink(temp)
+#download.file("https://s3.amazonaws.com/tripdata/201608-citibike-tripdata.zip", temp)
+#M8 <- read.csv(unz(temp, "201608-citibike-tripdata.csv"), header = T)
+#unlink(temp)
 
-download.file("https://s3.amazonaws.com/tripdata/201609-citibike-tripdata.zip", temp)
-M9 <- read.csv(unz(temp, "201609-citibike-tripdata.csv"), header = T)
-unlink(temp)
+#download.file("https://s3.amazonaws.com/tripdata/201609-citibike-tripdata.zip", temp)
+#M9 <- read.csv(unz(temp, "201609-citibike-tripdata.csv"), header = T)
+#unlink(temp)
 
 #create dataframe of M1-M9
-M1.M9 <- rbind(M1,M2,M3,M4,M5,M6,M7,M8,M9)
+#M1.M9 <- rbind(M1,M2,M3,M4,M5,M6,M7,M8,M9)
 
 #Reformatting Time
-M1.M9$starttime <- as.POSIXct(as.character(M1.M9$starttime), format = '%m/%d/%Y %H:%M:%S')
-M1.M9$stoptime <- as.POSIXct(as.character(M1.M9$stoptime), format = '%m/%d/%Y %H:%M:%S')
+#M1.M9$starttime <- as.POSIXct(as.character(M1.M9$starttime), format = '%m/%d/%Y %H:%M:%S')
+#M1.M9$stoptime <- as.POSIXct(as.character(M1.M9$stoptime), format = '%m/%d/%Y %H:%M:%S')
+
+
+M1$starttime <- as.POSIXct(as.character(M1$starttime), format = '%m/%d/%Y %H:%M:%S')
+M1$stoptime <- as.POSIXct(as.character(M1$stoptime), format = '%m/%d/%Y %H:%M:%S')
 
 
 download.file("https://s3.amazonaws.com/tripdata/201610-citibike-tripdata.zip", temp)
 M10 <- read.csv(unz(temp, "201610-citibike-tripdata.csv"), header = T)
 unlink(temp)
 
-download.file("https://s3.amazonaws.com/tripdata/201611-citibike-tripdata.zip", temp)
-M11 <- read.csv(unz(temp, "201611-citibike-tripdata.csv"), header = T)
-unlink(temp)
+#download.file("https://s3.amazonaws.com/tripdata/201611-citibike-tripdata.zip", temp)
+#M11 <- read.csv(unz(temp, "201611-citibike-tripdata.csv"), header = T)
+#unlink(temp)
 
-download.file("https://s3.amazonaws.com/tripdata/201612-citibike-tripdata.zip", temp)
-M12 <- read.csv(unz(temp, "201612-citibike-tripdata.csv"), header = T)
-unlink(temp)
+#download.file("https://s3.amazonaws.com/tripdata/201612-citibike-tripdata.zip", temp)
+#M12 <- read.csv(unz(temp, "201612-citibike-tripdata.csv"), header = T)
+#unlink(temp)
 
 # #Updating names for M10-M12 to match the headers of the others
 names(M10) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
-names(M11) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
-names(M12) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
+#names(M11) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
+#names(M12) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
 
 # combine M10-M11
 
-M10.M12 <- rbind(M10,M11,M12)
+#M10.M12 <- rbind(M10,M11,M12)
 
 #Reformatting Time
-M10.M12$starttime <- as.POSIXct(as.character(M10.M12$starttime), format = '%Y-%m-%d %H:%M:%S')
-M10.M12$stoptime <- as.POSIXct(as.character(M10.M12$stoptime), format = '%Y-%m-%d %H:%M:%S')
+#M10.M12$starttime <- as.POSIXct(as.character(M10.M12$starttime), format = '%Y-%m-%d %H:%M:%S')
+#M10.M12$stoptime <- as.POSIXct(as.character(M10.M12$stoptime), format = '%Y-%m-%d %H:%M:%S')
+
+
+M10$starttime <- as.POSIXct(as.character(M10$starttime), format = '%Y-%m-%d %H:%M:%S')
+M10$stoptime <- as.POSIXct(as.character(M10$stoptime), format = '%Y-%m-%d %H:%M:%S')
+
+#combine M1 and M10
+citibike2k16 <- rbind(M1,M10)
 
 # #Combine to single data set
-citibike2k16 <- rbind(M1.M9,M10.M12) 
+#citibike2k16 <- rbind(M1.M9,M10.M12) 
 
 # # #TO BE DELETED LATER only using 3000 data points
 citibike2k16 <- sample_n(citibike2k16, 3000)
