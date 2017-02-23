@@ -2,7 +2,11 @@
 title: "test"
 author: "Ink"
 date: "February 12, 2017"
-output: html_document
+output:
+  html_document: 
+    toc: yes
+    toc_float: yes
+  pdf_document: default
 ---
 
 #Unpacking data and libraries
@@ -285,7 +289,7 @@ barplot(tt$travel_duration,
 
 ```
 
-##Part 2
+#Visualizations
 ```{r}
 
 #get map base
@@ -304,18 +308,6 @@ names(trip.total) <- c("station.name","inflow","outflow","netflow")
 
 #Merge to get location of each station
 location <- unique(trainingdata[c("start.station.name","start.station.latitude","start.station.longitude")])
-
-
-
-
-
-
-
-
-#Error
-#ERROR in .."replacement has 0 rows, data has 686 Calls: <Anonymoys>...withVisable...
-#Error in line below
-
 trip.total$station.latitude <- location$start.station.latitude[match(trip.total$station.name, location$start.station.name)]
 trip.total$station.longitude <- location$start.station.longitude[match(trip.total$station.name, location$start.station.name)]
 
@@ -590,7 +582,7 @@ The most common route is 2006_2006 which is Central Park S & 6th Ave. This makes
 
 
 
-##Problem 1: stations to increase capacity
+##Stations Capacity Issues
 ```{r}
 #Reorangize data by factors 
 trainingdata$start.station.name <- as.factor(trainingdata$start.station.name)
@@ -669,4 +661,4 @@ p + geom_point(alpha = 1/20) +ggtitle("Total Trip Duration by Number of Trips")+
   scale_x_continuous(labels = comma)
 ```
 Contact GitHub API Training Shop Blog About
-© 2017 GitHub, Inc. Terms Privacy Security Status Help
+Â© 2017 GitHub, Inc. Terms Privacy Security Status Help
