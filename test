@@ -1,0 +1,784 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Unpacking data and libraries
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(ggmap)
+library(lubridate)
+library(scales)
+
+temp <- tempfile()
+download.file("https://s3.amazonaws.com/tripdata/201601-citibike-tripdata.zip", temp)
+M1 <- read.csv(unz(temp, "201601-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201602-citibike-tripdata.zip", temp)
+M2 <- read.csv(unz(temp, "201602-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201603-citibike-tripdata.zip", temp)
+M3 <- read.csv(unz(temp, "201603-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201604-citibike-tripdata.zip", temp)
+M4 <- read.csv(unz(temp, "201604-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201605-citibike-tripdata.zip", temp)
+M5 <- read.csv(unz(temp, "201605-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201606-citibike-tripdata.zip", temp)
+M6 <- read.csv(unz(temp, "201606-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201607-citibike-tripdata.zip", temp)
+M7 <- read.csv(unz(temp, "201607-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201608-citibike-tripdata.zip", temp)
+M8 <- read.csv(unz(temp, "201608-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201609-citibike-tripdata.zip", temp)
+M9 <- read.csv(unz(temp, "201609-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201610-citibike-tripdata.zip", temp)
+M10 <- read.csv(unz(temp, "201610-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201611-citibike-tripdata.zip", temp)
+M11 <- read.csv(unz(temp, "201611-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201612-citibike-tripdata.zip", temp)
+M12 <- read.csv(unz(temp, "201612-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+#Updating names for M10-M12 to match the headers of the others
+names(M10) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
+names(M11) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
+names(M12) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
+
+#Combine to single data set
+citibike2k16 <- rbind(M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12)
+
+#TO BE DELETED LATER only using 3000 data points
+citibike2k16 <- sample_n(citibike2k16, 3000)
+```
+
+
+
+
+
+#Pattern Analysis 
+
+
+
+
+
+
+
+```{r}
+#By Month
+trainingdata <- citibike2k16
+trainingdata$month <- month(as.POSIXct(trainingdata$starttime, format="%m/%d/%Y %H:%M:%S"))
+trainingdata$month <- factor(trainingdata$month)
+
+Jan <- nrow(subset(trainingdata, trainingdata$month == 1))
+Feb <- nrow(subset(trainingdata, trainingdata$month == 2))
+Mar <- nrow(subset(trainingdata, trainingdata$month == 3))
+Apr <- nrow(subset(trainingdata, trainingdata$month == 4))
+May <- nrow(subset(trainingdata, trainingdata$month == 5))
+Jun <- nrow(subset(trainingdata, trainingdata$month == 6))
+Jul <- nrow(subset(trainingdata, trainingdata$month == 7))
+Aug <- nrow(subset(trainingdata, trainingdata$month == 8))
+Sep <- nrow(subset(trainingdata, trainingdata$month == 9))
+Oct <- nrow(subset(trainingdata, trainingdata$month == 10))
+Nov <- nrow(subset(trainingdata, trainingdata$month == 11))
+Dec <- nrow(subset(trainingdata, trainingdata$month == 12))
+
+monthly <- c(Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec)
+
+barplot(monthly, xlab= "Month", ylab = "Volume", main="Volume of Usage by Month",  names.arg=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+```
+
+```{r}
+#By weekday 
+trainingdata$weekday<- wday(as.POSIXct(trainingdata$starttime, format="%m/%d/%Y %H:%M:%S"), label=TRUE, abbr = TRUE)
+
+Sun <- nrow(subset(trainingdata, trainingdata$weekday == "Sun"))
+Mon <- nrow(subset(trainingdata, trainingdata$weekday == "Mon"))
+Tue <- nrow(subset(trainingdata, trainingdata$weekday == "Tues"))
+Wed <- nrow(subset(trainingdata, trainingdata$weekday == "Wed"))
+Thr <- nrow(subset(trainingdata, trainingdata$weekday == "Thurs"))
+Fri <- nrow(subset(trainingdata, trainingdata$weekday == "Fri"))
+Sat <- nrow(subset(trainingdata, trainingdata$weekday == "Sat"))
+
+weekly <- c(Sun, Mon, Tue, Wed, Thr, Fri, Sat)
+barplot(weekly, xlab= "Day Of Week", ylab = "Volume", main="Volume of Usage by Day of Week",  names.arg=c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ))
+
+```
+
+```{r}
+#Time of Day
+trainingdata$hour<- hour(as.POSIXct(trainingdata$starttime, format="%m/%d/%Y %H:%M:%S"))
+
+a <- nrow(subset(trainingdata, trainingdata$hour == 1))                       
+b <- nrow(subset(trainingdata, trainingdata$hour == 2))                       
+c <- nrow(subset(trainingdata, trainingdata$hour == 3))                       
+d <- nrow(subset(trainingdata, trainingdata$hour == 4))                       
+e <- nrow(subset(trainingdata, trainingdata$hour == 5))                       
+f <- nrow(subset(trainingdata, trainingdata$hour == 6))                       
+g <- nrow(subset(trainingdata, trainingdata$hour == 7))                       
+h <- nrow(subset(trainingdata, trainingdata$hour == 8))                       
+i <- nrow(subset(trainingdata, trainingdata$hour == 9))                       
+j <- nrow(subset(trainingdata, trainingdata$hour == 10))                      
+k <- nrow(subset(trainingdata, trainingdata$hour == 11))                      
+l <- nrow(subset(trainingdata, trainingdata$hour == 12))                      
+m <- nrow(subset(trainingdata, trainingdata$hour == 13))                      
+n <- nrow(subset(trainingdata, trainingdata$hour == 14)) 
+o <- nrow(subset(trainingdata, trainingdata$hour == 15))                      
+p <- nrow(subset(trainingdata, trainingdata$hour == 16))                      
+q <- nrow(subset(trainingdata, trainingdata$hour == 17))                    
+r <- nrow(subset(trainingdata, trainingdata$hour == 18))                    
+s <- nrow(subset(trainingdata, trainingdata$hour == 19))                    
+t <- nrow(subset(trainingdata, trainingdata$hour == 20))                  
+u <- nrow(subset(trainingdata, trainingdata$hour == 21))                    
+v <- nrow(subset(trainingdata, trainingdata$hour == 22))                    
+w <- nrow(subset(trainingdata, trainingdata$hour == 23))                    
+x <- nrow(subset(trainingdata, trainingdata$hour == 24))                      
+
+hourly <- c(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x)
+
+barplot(hourly, xlab= "Hour", ylab = "Volume", main="Volume of Usage per Hour",  names.arg=c("1", "2", "3", "4", "5","6","7","8","9","10","11","12","13","14","15","16", "17","18","19", "20", "21", "22", "23", "24"), las =2)
+
+```
+
+```{r}
+#Traffic by station
+traffic <- select(trainingdata, start.station.id, start.station.name, start.station.latitude, end.station.id, end.station.name, end.station.latitude, end.station.longitude, bikeid, weekday)
+
+traffic$start.station.id <- factor(traffic$start.station.id)
+traffic$end.station.id <- factor(traffic$end.station.id)
+
+departing <- ddply(traffic, .(start.station.id), "nrow")
+arriving <- ddply(traffic, .(end.station.id), "nrow")
+
+names(departing)[2] <- "Departures"
+names(arriving)[2] <- "Arrivals"
+
+names(departing)[1] <- "Station_ID"
+names(arriving)[1] <- "Station_ID"
+
+asymmetry <- merge(departing, arriving, by.x="Station_ID", by.y= "Station_ID")
+asymmetry <- transform(asymmetry, netuse = asymmetry$Arrivals - asymmetry$Departure)
+
+m1 <- asymmetry %>%
+  select(Station_ID, netuse) %>%
+  arrange(desc(netuse))
+
+m2 <- m1[1:10,]
+
+barplot(m2$netuse,
+        main = "Net Use in 2016",
+        xlab = "Station_ID",
+        ylab = "Net Use",
+        names.arg =c("435", "324", "491", "337", "492", "380", "477", "427", "465", "173")
+)
+
+
+```
+
+
+```{r}
+#Traffic by station per day)
+trafficw <- subset(traffic, weekday %in% c("Mon", "Tues", "Wed", "Thurs", "Fri"))
+trafficwe <- subset(traffic, weekday %in% c("Sat", "Sun"))
+                    
+departingw <- ddply(trafficw, .(start.station.id), "nrow")
+arrivingw <- ddply(trafficw, .(end.station.id), "nrow")
+
+departingwe <- ddply(trafficwe, .(start.station.id), "nrow")
+arrivingwe <- ddply(trafficwe, .(end.station.id), "nrow")
+
+names(departingw)[2] <- "Departures"
+names(arrivingw)[2] <- "Arrivals"
+
+names(departingw)[1] <- "Station_ID"
+names(arrivingw)[1] <- "Station_ID"
+
+names(departingwe)[2] <- "Departures"
+names(arrivingwe)[2] <- "Arrivals"
+
+names(departingwe)[1] <- "Station_ID"
+names(arrivingwe)[1] <- "Station_ID"
+
+asymmetryw <- merge(departingw, arrivingw, by.x="Station_ID", by.y= "Station_ID")
+asymmetryw <- transform(asymmetryw, netusew = asymmetryw$Arrivals - asymmetryw$Departure)
+
+asymmetrywe <- merge(departingwe, arrivingwe, by.x="Station_ID", by.y= "Station_ID")
+asymmetrywe <- transform(asymmetrywe, netusewe = asymmetrywe$Arrivals - asymmetrywe$Departure)
+
+mw <- asymmetryw %>%
+  select(Station_ID, netusew) %>%
+  arrange(desc(netusew))
+
+mw <- mw[1:10,]
+
+mw
+
+barplot(mw$netusew,
+        main = "Net Use during Week Day",
+        xlab = "Station_ID",
+        ylab = "Net Use",
+        names.arg =c("477", "435", "492", "465", "427", "491", "324", "432", "456", "505")
+)
+```
+```{r}
+mwe <- asymmetrywe %>%
+  select(Station_ID, netusewe) %>%
+  arrange(desc(netusewe))
+
+mwe <- mwe[1:10,]
+
+mwe
+
+barplot(mwe$netusewe,
+        main = "Net Use during Weekend",
+        xlab = "Station_ID",
+        ylab = "Net Use",
+        names.arg =c("466", "161", "168", "445", "368", "467", "329", "212", "461", "259")
+)
+```
+
+```{r}
+#Overall Trip Duration per Station
+
+traveltime <- ddply(trainingdata, ~ start.station.id, summarize, travel_duration = mean(tripduration))
+
+traveltime %>%
+  select(start.station.id, travel_duration) %>%
+  arrange(desc(travel_duration))
+
+tt <- traveltime[1:10,]
+
+barplot(tt$travel_duration,
+        main = "Travel Duration by Top Ten Stations",
+        xlab = "Station_ID",
+        ylab = "Average Travel Duration",
+        names.arg =c("72", "79", "82", "445", "368", "467", "329", "212", "461", "259")
+)
+
+```
+
+
+
+
+#Visualizations
+
+
+
+
+
+
+```{r}
+#Reformatting Time
+trainingdata$starttime <- as.POSIXct(as.character(trainingdata$starttime), format = '%m/%d/%Y %H:%M:%S')
+trainingdata$stoptime <- as.POSIXct(as.character(trainingdata$stoptime), format = '%m/%d/%Y %H:%M:%S')
+
+#further reformatting time variable
+trainingdata$day <- strftime(trainingdata$starttime, "%d")
+trainingdata$month <- strftime(trainingdata$starttime, "%m")
+trainingdata$year <- strftime(trainingdata$starttime, "%Y")
+trainingdata$hour <- strftime(trainingdata$starttime, "%H")
+trainingdata$minute <- strftime(trainingdata$starttime, "%M")
+trainingdata$second <- strftime(trainingdata$starttime, "%S")
+
+#start station frequency
+by.start <- trainingdata %>%
+  group_by(start.station.id, start.station.longitude, start.station.latitude) %>% summarise(n = n())
+by.start <- as.data.frame(by.start)
+names(by.start) <- c("station.id", "longitude", "latitude", "frequency")
+
+#end station frequency
+by.end <- trainingdata %>%
+    group_by(end.station.id, end.station.longitude, end.station.latitude) %>% summarise(n=n())
+by.end <- as.data.frame(by.end)
+names(by.end) <-  c("station.id", "longitude", "latitude", "frequency")
+
+#merging data to find most frequent
+by.start.end <- merge(by.start, by.end, by = "station.id")
+by.start.end$tot.freq <- by.start.end$frequency.x + by.start.end$frequency.y
+by.start.end$longitude.y <- NULL
+by.start.end$latitude.y <- NULL
+
+#pulling top 50 most frequent stations
+m1 <- by.start.end %>%
+  select(station.id, longitude.x, latitude.x, tot.freq) %>%
+  arrange(desc(tot.freq))
+m2 <- m1[1:50, ]
+
+
+#ggmap
+library("ggmap")
+
+#get map base
+source = "google"
+NYCmap <- get_map("New York City",zoom=15,maptype="roadmap",source= source)
+
+#Dot Plot of top 50 most popular stations
+ggmap(NYCmap) + geom_point(aes(x=longitude.x,y=latitude.x, size = tot.freq, color=tot.freq), data=m2) + geom_point(size=5,alpha=0.3) 
+
+#attempt at a heat map, looks kind of weird
+ggmap(NYCmap) + stat_density2d(data=by.start.end, aes(x=longitude.x, y=latitude.x, fill = tot.freq, alpha = .1), size=.01, bins = 16, geom="polygon") + scale_fill_gradient(low = "green", high = "red") + scale_alpha(range = c(0, 0.1), guide = FALSE) 
+
+#merging start and end station
+n1 <- trainingdata
+n1$station.id <- paste(n1$start.station.id, n1$end.station.id, sep="_")
+
+#Finding route frequency
+by.route <- n1 %>%
+  group_by(station.id, start.station.latitude, start.station.longitude, end.station.latitude, end.station.longitude) %>% summarise(freq = n())
+by.route <- as.data.frame(by.route)
+
+p1 <- by.route %>%
+  select(station.id, start.station.longitude, start.station.latitude, end.station.longitude, end.station.latitude, freq) %>%
+  arrange(desc(freq))
+
+p1 <- p1[1:1000, ]
+View(p1)
+
+ggmap(NYCmap) +
+  geom_polygon(data=p1, aes(x=start.station.longitude, y = start.station.latitude), color = "blue") +
+  geom_point(data = p1, aes(x=start.station.longitude, y = start.station.latitude), color = "black", size = 5) +
+  geom_point(data = p1, aes(x = end.station.longitude, y = end.station.latitude, color = "yellow", size = 4)) +
+  coord_fixed(1.3)
+
+ggmap(NYCmap) +
+  geom_polygon(data = p1,
+               aes(x= start.station.longitude, y = start.station.latitude, group = station.id),
+               fill = "#080808", color = "#080808", alpha = 0.5) +
+  geom_leg(data = p1,
+           aes(x = start.station.longitude, xend = end.station.longitude,
+           y = start.station.latitude, yend = end.station.latitude,
+           size = freq, color = freq, alpha = freq)) + 
+  geom_point(data = p1,
+             aes(x = start.station.longitude, y = start.station.latitude),
+             color = "#ffa500", alpha = 0.5, size = 1) +
+  scale_size_continuous(range = c(0.3, 3)) + 
+  scale_color_gradient(low = "#555555", high = "#ffffff", trans = "sqrt") +
+  scale_alpha_continuous(range = c(0.6, 1), trans = "sqrt")
+
+c <- ggplot(p1, aes(station.id, freq))
+c + geom_bar(stat = "identity")
+```
+
+##Part 2?
+```{r}
+#ggmap
+library("ggmap")
+
+#get map base
+source = "google"
+NYCmap <- get_map("New York City",zoom=12,maptype="roadmap",source= source)
+
+#Finding total outflows and inflows for each station
+trip.total.inflow <- count(trainingdata, end.station.name)
+trip.total.outflow <- count(trainingdata, start.station.name)
+trip.total <- merge(trip.total.inflow, trip.total.outflow, by = c(1))
+
+#Finding total surplus or deficit for each station
+trip.total$netflow <- trip.total$n.x - trip.total$n.y
+
+names(trip.total) <- c("station.name","inflow","outflow","netflow")
+
+#Merge to get location of each station
+location <- unique(trainingdata[c("start.station.name","start.station.latitude","start.station.longitude")])
+trip.total$station.latitude <- location$start.station.latitude[match(trip.total$station.name, location$start.station.name)]
+trip.total$station.longitude <- location$start.station.longitude[match(trip.total$station.name, location$start.station.name)]
+
+#Plot the top 50 stations with the most deficit and surplus on the map
+trip.total$sur.or.def <- ifelse(trip.total$netflow > 0, "surplus","deficit")
+
+#Pull 50 top stations with the most deficit
+trip.total.def <- trip.total %>% arrange(netflow)
+trip.total.def.50 <- trip.total.def[1:50,]
+
+#50 top stations with the most deficit
+View(trip.total.def.50)
+trip.total.sur <- trip.total %>% arrange(desc(netflow))
+trip.total.sur.50 <- trip.total.sur[1:50,]
+
+#50 top stations with the most surplus
+View(trip.total.sur.50)
+
+#To create map with both deficit and surplus we combind all the rows together
+trip.total.defsur <- rbind(trip.total.sur.50,trip.total.def.50)
+
+#ggmap
+library("ggmap")
+
+#get map base
+source = "google"
+NYCmap <- get_map("New York City",zoom=12,maptype="roadmap",source= source)
+#map
+ggmap(NYCmap) + 
+  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.total.defsur)
+
+
+#Finding outflow and inflow by month for each station
+trip.by.month.inflow <- count(trainingdata, end.station.name, stoptime = cut(stoptime, breaks ="month"))
+trip.by.month.outflow <- count(trainingdata, start.station.name, starttime = cut(starttime, breaks= "month"))
+
+#Finding surplus or deficit by month for each station
+trip.by.month <- merge(trip.by.month.inflow, trip.by.month.outflow, by = c(1,2))
+trip.by.month$netflow <- trip.by.month$n.x - trip.by.month$n.y
+names(trip.by.month) <- c("station.name","date","inflow","outflow","netflow")
+
+#Merge to get location of each station
+location <- unique(trainingdata[c("start.station.name","start.station.latitude","start.station.longitude")])
+trip.by.month$station.latitude <- location$start.station.latitude[match(trip.by.month$station.name, location$start.station.name)]
+trip.by.month$station.longitude <- location$start.station.longitude[match(trip.by.month$station.name, location$start.station.name)]
+
+#Plot map for January 2016
+#First we pull the data for only 2016-01-01
+trip.by.jan <- trip.by.month[trip.by.month$date == "2016-01-01",]
+
+#Pull out the data for the top 50 deficit
+trip.by.jan.def <- trip.by.jan %>% arrange(netflow)
+trip.by.jan.def.50 <- trip.by.jan.def[1:50,]
+
+View(trip.by.jan.def.50)
+
+#Pull out the data for the top 50 surplus
+trip.by.jan.sur <- trip.by.jan %>% arrange(desc(netflow))
+trip.by.jan.sur.50 <- trip.by.jan.sur[1:50,]
+
+#Combine the row
+trip.by.jan.defsur <- rbind(trip.by.jan.def.50,trip.by.jan.sur.50)
+trip.by.jan.defsur$sur.or.def <- ifelse(trip.by.jan.defsur$netflow > 0, "surplus","deficit")
+#map
+ggmap(NYCmap) + 
+  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.jan.defsur)
+  
+#Finding outflow and inflow by weekends and weekdays
+
+#First we create the columns to see what day it is
+trainingdata.date <- trainingdata %>% mutate(weekday = wday(starttime, label = T, abbr = F))
+#Then we divide them into weekend or weekday
+trainingdata.date$daytype <- ifelse(trainingdata.date$weekday == "Saturday"|trainingdata.date$weekday == "Sunday",'weekend','weekday')
+#Finding outflow and inflow by type of day for each station
+trip.by.day.inflow <- count(trainingdata.date, end.station.name, daytype)
+trip.by.day.outflow <- count(trainingdata.date, start.station.name, daytype)
+
+names(trip.by.day) <- c("station.name","inflow","outflow","netflow")
+trip.by.day$station.latitude <- location$start.station.latitude[match(trip.by.day$station.name, location$start.station.name)]
+trip.by.day$station.longitude <- location$start.station.longitude[match(trip.by.day$station.name, location$start.station.name)]
+
+#Finding surplus or deficit by daytype for each station
+trip.by.day <- merge(trip.by.day.inflow, trip.by.day.outflow, by = c(1,2))
+trip.by.day$netflow <- trip.by.day$n.x - trip.by.day$n.y
+
+names(trip.by.day) <- c("station.name","day","inflow","outflow","netflow")
+
+trip.by.day$station.latitude <- location$start.station.latitude[match(trip.by.day$station.name, location$start.station.name)]
+trip.by.day$station.longitude <- location$start.station.longitude[match(trip.by.day$station.name, location$start.station.name)]
+
+#Plot map for weekend
+#First we pull the data for only weekend
+trip.by.weekend <- trip.by.day[trip.by.day$day == "weekend",]
+
+#Pull out the data for the top 50 deficit
+trip.by.weekend.def <- trip.by.weekend %>% arrange(netflow)
+trip.by.weekend.def.50 <- trip.by.weekend.def[1:50,]
+
+View(trip.by.weekend.def.50)
+
+#Pull out the data for the top 50 surplus
+trip.by.weekend.sur <- trip.by.weekend %>% arrange(desc(netflow))
+trip.by.weekend.sur.50 <- trip.by.weekend.sur[1:50,]
+
+View(trip.by.weekend.sur.50)
+
+#Combine the row
+trip.by.weekend.defsur <- rbind(trip.by.weekend.def.50,trip.by.weekend.sur.50)
+trip.by.weekend.defsur$sur.or.def <- ifelse(trip.by.weekend.defsur$netflow > 0, "surplus","deficit")
+#map
+ggmap(NYCmap) + 
+  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.weekend.defsur)
+
+#For weekday
+trip.by.weekday <- trip.by.day[trip.by.day$day == "weekday",]
+
+#Pull out the data for the top 50 deficit
+trip.by.weekday.def <- trip.by.weekday %>% arrange(netflow)
+trip.by.weekday.def.50 <- trip.by.weekday.def[1:50,]
+
+View(trip.by.weekday.def.50)
+
+#Pull out the data for the top 50 surplus
+trip.by.weekday.sur <- trip.by.weekday %>% arrange(desc(netflow))
+trip.by.weekday.sur.50 <- trip.by.weekday.sur[1:50,]
+
+View(trip.by.weekday.sur.50)
+
+#Combine the row
+trip.by.weekday.defsur <- rbind(trip.by.weekday.def.50,trip.by.weekday.sur.50)
+trip.by.weekday.defsur$sur.or.def <- ifelse(trip.by.weekday.defsur$netflow > 0, "surplus","deficit")
+#map
+ggmap(NYCmap) + 
+  geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.weekday.defsur)
+```
+
+
+#Erics Part
+
+
+
+
+
+
+
+##Most Frequent Start Station
+```{r}
+by.start <- citibike2k16 %>%
+  group_by(start.station.id, start.station.longitude, start.station.latitude) %>% summarize(frequency = n())
+by.start <- as.data.frame(by.start)
+names(by.start) <- c("station.id", "longitude", "latitude", "frequency")
+
+by.start <- by.start %>%
+  select(station.id, longitude, latitude, frequency) %>%
+  arrange(desc(frequency))
+
+by.start.1000 <- by.start[1:1000, ]
+
+#get map base
+source = "google"
+NYCmap <- get_map("New York City",zoom=15,maptype="roadmap",source= source)
+
+#Dot Plot of top 1000 most popular start stations
+ggmap(NYCmap) + geom_point(aes(x=longitude,y=latitude, size = frequency, color=frequency), data=by.start.1000) + geom_point(size=5,alpha=0.3) 
+
+#Barplot of top 10 most popular start stations
+by.start.10 <- by.start[1:10, ]
+
+by.start.10$station.id
+
+barplot(by.start.10$frequency, main = "Most Frequent Start Stations", xlab = "Station ID", ylab = "Frequency", names.arg = c("519", "435", "497", "426", "402", "490", "285", "284", "151", "459"), col = "blue")
+```
+
+As you can see, the most common start station is station 519 which is Pershing Square North
+
+##Most Frequent End Station
+```{r}
+#end station frequency
+by.end <- citibike2k16 %>%
+    group_by(end.station.id, end.station.longitude, end.station.latitude) %>% summarise(n=n())
+by.end <- as.data.frame(by.end)
+names(by.end) <-  c("station.id", "longitude", "latitude", "frequency")
+
+by.end <- by.end %>%
+  select(station.id, longitude, latitude, frequency) %>%
+  arrange(desc(frequency))
+
+by.end.1000 <- by.end[1:1000, ]
+
+#get map base
+source = "google"
+NYCmap <- get_map("New York City",zoom=15,maptype="roadmap",source= source)
+
+#Dot Plot of top 1000 most popular start stations
+ggmap(NYCmap) + geom_point(aes(x=longitude,y=latitude, size = frequency, color=frequency), data=by.end.1000) + geom_point(size=5,alpha=0.3) 
+
+#Barplot of top 10 most popular start stations
+by.end.10 <- by.end[1:10, ]
+
+barplot(by.start.10$frequency, main = "Most Frequent End Stations", xlab = "Station ID", ylab = "Frequency", names.arg = c("519", "402", "426", "497", "435", "285", "490", "284", "459", "477"), col = "blue")
+```
+
+Similar to the start station, the most common end station is 519 which is Pershing Square North.
+
+##Most Frequent Station
+```{r}
+
+#merging data to find most frequent
+by.start.end <- merge(by.start, by.end, by = "station.id")
+by.start.end$tot.freq <- by.start.end$frequency.x + by.start.end$frequency.y
+by.start.end$longitude.y <- NULL
+by.start.end$latitude.y <- NULL
+names(by.start.end) <-  c("station.id", "longitude", "latitude", "start_frequency", "end_frequency", "frequency")
+
+#arranging and pulling top 1000 most frequent stations
+by.start.end <- by.start.end %>%
+  select(station.id, longitude, latitude, frequency) %>%
+  arrange(desc(frequency))
+by.start.end.1000 <- by.start.end[1:1000, ]
+
+#get map base
+source = "google"
+NYCmap <- get_map("New York City",zoom=15,maptype="roadmap",source= source)
+
+#Dot Plot of top 1000 most popular stations
+ggmap(NYCmap) + geom_point(aes(x=longitude, y=latitude, size = frequency, color=frequency), data=by.start.end.1000) + geom_point(size=5,alpha=0.3) 
+
+#Barplot of most frequently used station
+by.start.end.10 <- by.start.end.1000[1:10, ]
+
+barplot(by.start.end.10$frequency, main = "Most Frequented Stations", xlab = "Station ID", ylab = "Frequency", names.arg = c("519", "435", "402", "497", "426",
+                                   "285", "490", "284", "151", "459"), col = "blue")
+```
+As expected, the most common station is 519, Pershing Square North, which was also the most common start and end station
+
+##Most Frequent Routes
+```{r}
+#merging start and end station
+citibike2k16.routes <- citibike2k16
+citibike2k16.routes$station.id <- paste(citibike2k16.routes$start.station.id, citibike2k16.routes$end.station.id, sep="_")
+
+#Finding route frequency
+by.route <- citibike2k16.routes %>%
+  group_by(station.id, start.station.latitude, start.station.longitude, end.station.latitude, end.station.longitude) %>% summarise(frequency = n())
+by.route <- as.data.frame(by.route)
+
+#Arranging by route and top 1000 routes
+by.route <- by.route %>%
+  select(station.id, start.station.longitude, start.station.latitude, end.station.longitude, end.station.latitude, frequency) %>%
+  arrange(desc(frequency))
+by.route.1000 <- by.route[1:1000, ]
+
+#most common path map
+ggmap(NYCmap) +
+  geom_polygon(data = by.route.1000,
+               aes(x= start.station.longitude, y = start.station.latitude, group = station.id),
+               fill = "#080808", color = "#080808", alpha = 0.5) +
+  geom_leg(data = by.route.1000,
+           aes(x = start.station.longitude, xend = end.station.longitude,
+           y = start.station.latitude, yend = end.station.latitude,
+           size = frequency, color = frequency, alpha = frequency)) + 
+  geom_point(data = by.route.1000,
+             aes(x = start.station.longitude, y = start.station.latitude),
+             color = "#ffa500", alpha = 0.5, size = 1) +
+  scale_size_continuous(range = c(0.3, 3)) + 
+  scale_color_gradient(low = "#555555", high = "#ffffff", trans = "sqrt") +
+  scale_alpha_continuous(range = c(0.6, 1), trans = "sqrt")
+
+by.route.10 <- by.route.1000[1:10, ]
+
+#Barplot of most frequented routes
+barplot(by.route.10$frequency, names.arg = c("2006_2006", "2006_3143", "387_387",   "514_426", "435_509", "519_492", "3150_3147", "519_477", "519_491", "3093_2002"), main = "Most Common Routes", ylab = "Frequency", col = "Blue",las = 2)
+```
+
+The most common route is 2006_2006 which is Central Park S & 6th Ave. This makes sense because the most common route is for people to ride their bikes around Central Park.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Business Solutions
+
+
+
+
+
+
+
+
+
+
+
+##Problem 1: stations to increase capacity
+```{r}
+#Reorangize data by factors 
+trainingdata$start.station.name <- as.factor(trainingdata$start.station.name)
+
+trainingdata$end.station.name<- as.factor(trainingdata$end.station.name)
+
+#Sort by stations and months, inflow is the numbers of bikes return, outflow is the numbers of bikes borrow. 
+
+trip.by.month.inflow <- count(trainingdata, end.station.name, stoptime = cut(stoptime, breaks = "month"))
+ 
+trip.by.month.outflow <- count(trainingdata, start.station.name, starttime = cut(starttime, breaks = "month")) 
+
+#Merge the inflow and outflow to show deficit 
+
+trip.by.month <- merge(trip.by.month.inflow, trip.by.month.outflow, by = c(1,2))
+
+trip.by.month$deficit <- trip.by.month$n.x - trip.by.month$n.y
+
+#Draw graphs to show the top three stations with deficits and surplus by months 
+
+trip.by.month$month <- month(trip.by.month$stoptime)
+```
+
+##Bike Maintenance
+###By Number of Trips
+
+To check on if certain bikes are being used more than others, we first looked into the number of unique trips taken by each bike. 
+If the bikes are being used roughly the same amount of times, we would expect the histogram of number of uses to be roughly normal.
+
+```{r}
+#TODO make sure the t data is full data set
+
+#Grouping by bikeID
+by.id <- t %>%
+  group_by(bikeid) %>%
+  summarise(total.duration = sum(tripduration)/60, num.uses = n())
+
+#Plot of NumTrips  by bikeID
+qplot(num.uses, data=by.id, geom="histogram", main = "Total Number of Trips per Bike", xlab = "Total Number of Trips (per bike)", ylab = "Amount of Bikes") +
+   scale_y_continuous(labels = comma) + 
+   scale_x_continuous(labels = comma)
+```
+The above histogram shows that the data shows more of a bimodal distribution, which could indicate that there is some other factors causing certian bikes to be used more frequently than others. 
+
+###By Trip Duration
+Next we looked at the total trip durations of each bike to see if any patterns emerged. We however think that frequency of use (as shown above) would be more indicative of difference in usage patterns than the trip durations. 
+```{r setup, include=FALSE}
+#Smaller sample of 100 for histogram (replace with by id)
+# sample <- sample_n(by.id, 100)
+
+#Mean and Medain pretty similar for number of uses
+# summary(by.id$num.uses)
+# hist(sample$num.uses, 100, col="black", main = "Histogram of Sample Number of Uses", xlab = "Number of Uses (per unique bike)")
+
+
+qplot(total.duration, data=by.id, geom="histogram", bins = 500, main = "Total Trip Time per Bike", xlab = "Total Trip Time (in minutes)", ylab = "Amount of Bikes") +
+   scale_y_continuous(labels = comma) + 
+   scale_x_continuous(labels = comma)
+
+#QQ plot to show non-normal distribution
+qqnorm(by.id$total.duration); qqline(by.id$total.duration, col = 2) 
+```
+These graphs show that the trip time duration per unique bike does not follow a normal distribution, however a nonlinear distribution is more appropriate. Also, you can note from the above graphs that is appears that the trip time is skewed right as should be expected with outlier longer rides. 
+
+###Total Trip Time and Number of Trips
+
+To show the relationship between number of trips taken and the total trip time by each bike, we created the following scatterplot. This graph helps show why the total trip time would not be a normal distribution as well as helping to see how frequent most bikes are used and how long they are used for.
+```{r}
+#To show the correlation between number of trips and total distance
+p <- ggplot(by.id, aes(by.id$num.uses, by.id$total.duration))
+p + geom_point(alpha = 1/20) +ggtitle("Total Trip Duration by Number of Trips")+
+  xlab("Number of Trips Taken")+
+  ylab("Aggregate Trip Duration (min)")+
+  scale_y_continuous(labels = comma) + 
+  scale_x_continuous(labels = comma)
+```
+
