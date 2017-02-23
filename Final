@@ -1,4 +1,71 @@
-(all library packages used here)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Unpacking data and libraries
+```{r}
+library(ggplot2)
+library(dplyr)
+library(ggmap)
+
+temp <- tempfile()
+download.file("https://s3.amazonaws.com/tripdata/201601-citibike-tripdata.zip", temp)
+M1 <- read.csv(unz(temp, "201601-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201602-citibike-tripdata.zip", temp)
+M2 <- read.csv(unz(temp, "201602-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201603-citibike-tripdata.zip", temp)
+M3 <- read.csv(unz(temp, "201603-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201604-citibike-tripdata.zip", temp)
+M4 <- read.csv(unz(temp, "201604-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201605-citibike-tripdata.zip", temp)
+M5 <- read.csv(unz(temp, "201605-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201606-citibike-tripdata.zip", temp)
+M6 <- read.csv(unz(temp, "201606-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201607-citibike-tripdata.zip", temp)
+M7 <- read.csv(unz(temp, "201607-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201608-citibike-tripdata.zip", temp)
+M8 <- read.csv(unz(temp, "201608-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201609-citibike-tripdata.zip", temp)
+M9 <- read.csv(unz(temp, "201609-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201610-citibike-tripdata.zip", temp)
+M10 <- read.csv(unz(temp, "201610-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201611-citibike-tripdata.zip", temp)
+M11 <- read.csv(unz(temp, "201611-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+download.file("https://s3.amazonaws.com/tripdata/201612-citibike-tripdata.zip", temp)
+M12 <- read.csv(unz(temp, "201612-citibike-tripdata.csv"), header = T)
+unlink(temp)
+
+#Updating names for M10-M12 to match the headers of the others
+names(M10) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
+names(M11) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
+names(M12) <- c("tripduration", "starttime", "stoptime", "start.station.id", "start.station.name", "start.station.latitude", "start.station.longitude", "end.station.id", "end.station.name", "end.station.latitude", "end.station.longitude", "bikeid", "usertype", "birth.year", "gender")
+
+#Combine to single data set
+citibike2k16 <- rbind(M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12)
+
 
 (insert data cleaning here)
 
@@ -20,7 +87,138 @@
 
 
 #Visualizations
-##Popular Stations on Map
+
+#Most Frequent Start Station
+```{r}
+by.start <- citibike2k16 %>%
+  group_by(start.station.id, start.station.longitude, start.station.latitude) %>% summarize(frequency = n())
+by.start <- as.data.frame(by.start)
+names(by.start) <- c("station.id", "longitude", "latitude", "frequency")
+
+by.start <- by.start %>%
+  select(station.id, longitude, latitude, frequency) %>%
+  arrange(desc(frequency))
+
+by.start.1000 <- by.start[1:1000, ]
+
+#get map base
+source = "google"
+NYCmap <- get_map("New York City",zoom=15,maptype="roadmap",source= source)
+
+#Dot Plot of top 1000 most popular start stations
+ggmap(NYCmap) + geom_point(aes(x=longitude,y=latitude, size = frequency, color=frequency), data=by.start.1000) + geom_point(size=5,alpha=0.3) 
+
+#Barplot of top 10 most popular start stations
+by.start.10 <- by.start[1:10, ]
+
+by.start.10$station.id
+
+barplot(by.start.10$frequency, main = "Most Frequent Start Stations", xlab = "Station ID", ylab = "Frequency", names.arg = c("519", "435", "497", "426", "402", "490", "285", "284", "151", "459"), col = "blue")
+```
+
+As you can see, the most common start station is station 519 which is Pershing Square North
+
+#Most Frequent End Station
+```{r}
+#end station frequency
+by.end <- citibike2k16 %>%
+    group_by(end.station.id, end.station.longitude, end.station.latitude) %>% summarise(n=n())
+by.end <- as.data.frame(by.end)
+names(by.end) <-  c("station.id", "longitude", "latitude", "frequency")
+
+by.end <- by.end %>%
+  select(station.id, longitude, latitude, frequency) %>%
+  arrange(desc(frequency))
+
+by.end.1000 <- by.end[1:1000, ]
+
+#get map base
+source = "google"
+NYCmap <- get_map("New York City",zoom=15,maptype="roadmap",source= source)
+
+#Dot Plot of top 1000 most popular start stations
+ggmap(NYCmap) + geom_point(aes(x=longitude,y=latitude, size = frequency, color=frequency), data=by.end.1000) + geom_point(size=5,alpha=0.3) 
+
+#Barplot of top 10 most popular start stations
+by.end.10 <- by.end[1:10, ]
+
+barplot(by.start.10$frequency, main = "Most Frequent End Stations", xlab = "Station ID", ylab = "Frequency", names.arg = c("519", "402", "426", "497", "435", "285", "490", "284", "459", "477"), col = "blue")
+```
+
+Similar to the start station, the most common end station is 519 which is Pershing Square North.
+
+#Most Frequent Station
+```{r}
+
+#merging data to find most frequent
+by.start.end <- merge(by.start, by.end, by = "station.id")
+by.start.end$tot.freq <- by.start.end$frequency.x + by.start.end$frequency.y
+by.start.end$longitude.y <- NULL
+by.start.end$latitude.y <- NULL
+names(by.start.end) <-  c("station.id", "longitude", "latitude", "start_frequency", "end_frequency", "frequency")
+
+#arranging and pulling top 1000 most frequent stations
+by.start.end <- by.start.end %>%
+  select(station.id, longitude, latitude, frequency) %>%
+  arrange(desc(frequency))
+by.start.end.1000 <- by.start.end[1:1000, ]
+
+#get map base
+source = "google"
+NYCmap <- get_map("New York City",zoom=15,maptype="roadmap",source= source)
+
+#Dot Plot of top 1000 most popular stations
+ggmap(NYCmap) + geom_point(aes(x=longitude, y=latitude, size = frequency, color=frequency), data=by.start.end.1000) + geom_point(size=5,alpha=0.3) 
+
+#Barplot of most frequently used station
+by.start.end.10 <- by.start.end.1000[1:10, ]
+
+barplot(by.start.end.10$frequency, main = "Most Frequented Stations", xlab = "Station ID", ylab = "Frequency", names.arg = c("519", "435", "402", "497", "426",
+                                   "285", "490", "284", "151", "459"), col = "blue")
+```
+As expected, the most common station is 519, Pershing Square North, which was also the most common start and end station
+
+#Most Frequent Routes
+```{r}
+#merging start and end station
+citibike2k16.routes <- citibike2k16
+citibike2k16.routes$station.id <- paste(citibike2k16.routes$start.station.id, citibike2k16.routes$end.station.id, sep="_")
+
+#Finding route frequency
+by.route <- citibike2k16.routes %>%
+  group_by(station.id, start.station.latitude, start.station.longitude, end.station.latitude, end.station.longitude) %>% summarise(frequency = n())
+by.route <- as.data.frame(by.route)
+
+#Arranging by route and top 1000 routes
+by.route <- by.route %>%
+  select(station.id, start.station.longitude, start.station.latitude, end.station.longitude, end.station.latitude, frequency) %>%
+  arrange(desc(frequency))
+by.route.1000 <- by.route[1:1000, ]
+
+#most common path map
+ggmap(NYCmap) +
+  geom_polygon(data = by.route.1000,
+               aes(x= start.station.longitude, y = start.station.latitude, group = station.id),
+               fill = "#080808", color = "#080808", alpha = 0.5) +
+  geom_leg(data = by.route.1000,
+           aes(x = start.station.longitude, xend = end.station.longitude,
+           y = start.station.latitude, yend = end.station.latitude,
+           size = frequency, color = frequency, alpha = frequency)) + 
+  geom_point(data = by.route.1000,
+             aes(x = start.station.longitude, y = start.station.latitude),
+             color = "#ffa500", alpha = 0.5, size = 1) +
+  scale_size_continuous(range = c(0.3, 3)) + 
+  scale_color_gradient(low = "#555555", high = "#ffffff", trans = "sqrt") +
+  scale_alpha_continuous(range = c(0.6, 1), trans = "sqrt")
+
+by.route.10 <- by.route.1000[1:10, ]
+
+#Barplot of most frequented routes
+barplot(by.route.10$frequency, names.arg = c("2006_2006", "2006_3143", "387_387",   "514_426", "435_509", "519_492", "3150_3147", "519_477", "519_491", "3093_2002"), main = "Most Common Routes", ylab = "Frequency", col = "Blue",las = 2)
+```
+
+The most common route is 2006_2006 which is Central Park S & 6th Ave. This makes sense because the most common route is for people to ride their bikes around Central Park.
+
 
 ##Station with surplus and deficit
 
