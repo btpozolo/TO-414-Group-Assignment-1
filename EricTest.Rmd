@@ -664,7 +664,7 @@ deficit.top <- rbind(Jan.deficit.top,Feb.deficit.top,March.deficit.top,Apr.defic
 
 deficit.top
 ```
-###The deficit.top shows the top three station name that would need to increase bike capacity by months with the highest deficits
+#The deficit.top shows the top three station name that would need to increase bike capacity by months with the highest deficits
 
 ```{r)
 #Sort months data by quartely to easily read the graphs 
@@ -676,31 +676,31 @@ deficit.4quarter.top <- rbind(Oct.deficit.top,Nov.deficit.top,Dec.deficit.top)
 
 ```
 
-###The graph could show in Jan, we need to increase bike capacity in PABT Valet, Penn Station Valet, and Broadway & W 55 St. In Feb, we need to increase bike capacity in Penn Station Valet, PABT Valet, Pershing Square South. In March, we need to increase bike capacity in W 42 St & Dyer Ave, Penn Station Valet, W 52 St & 5 Ave.
+#The graph could show in Jan, we need to increase bike capacity in PABT Valet, Penn Station Valet, and Broadway & W 55 St. In Feb, we need to increase bike capacity in Penn Station Valet, PABT Valet, Pershing Square South. In March, we need to increase bike capacity in W 42 St & Dyer Ave, Penn Station Valet, W 52 St & 5 Ave.
 
 ```{r}
 ggplot(deficit.1quarter.top,aes(x=month, y = deficit, fill = end.station.name)) + geom_col(position = "dodge") + ylab("Top three deficits station") + ggtitle("First Quarter top deficits stations by months")
 
 ```
-###This graph could show in April, we need to increase bike capacity in W 42 St & Dyer Ave, E 47 St & Park Ave, and Pershing Square North. In May, we need to increase bike capacity in W 42 St & Dyer Ave, Broadway & E 22 St, Penn Station Valet. In June, we need to increase bike capacity in Barrow St & Hudson St,  Penn Station Valet, Cleveland Pl & Spring.
+#This graph could show in April, we need to increase bike capacity in W 42 St & Dyer Ave, Penn Station Valet, and Grand Army Plaza & Central Park S. In May, we need to increase bike capacity in Penn Station Valet, W 42 St & Dyer Ave, Columbus Ave & W 72 St. In June, we need to increase bike capacity in Penn Station Valet, W 42 St & Dyer Ave, E 47 St & Park Ave .
 
 ```{r}
 ggplot(deficit.2quarter.top,aes(x=month, y = deficit, fill = end.station.name)) + geom_col(position = "dodge") + ylab("Top three deficits station") + ggtitle("Second Quarter top deficits stations by months")
 ```
 
-###This graph could show in July, we need to increase bike capacity in W 42 St & Dyer Ave,Columbus Ave & W 72 St, and Barrow St & Hudson St.In August, we need to increase bike capacity in E 47 St & Park Ave,  Penn Station Valet, Cooper Square & E 7 St. In Sep, we need to increase bike capacity in Broadway & W 60 St, Penn Station Valet, and Pershing Square North. 
+#This graph could show in July, we need to increase bike capacity in Penn Station Valet,W 42 St & Dyer Ave, and E 47 St & Park Ave.In August, we need to increase bike capacity in  Penn Station Valet, W 42 St & Dyer Ave , E 47 St & Park Ave. In Sep, we need to increase bike capacity in Penn Station Valet, W 42 St & Dyer Ave, and E 47 St & Park Ave. 
 
 ```{r}
 ggplot(deficit.3quarter.top,aes(x=month, y = deficit, fill = end.station.name)) + geom_col(position = "dodge") + ylab("Top three deficits station") + ggtitle("Third Quarter top deficits stations by months")
 
 ```
-###This graph could show which station we need to increase bike capacity from Oct to December, it might not having data because bikers not borrowing bikes during winter time.  
+#This graph could show in Oct, we need to increase bike capacity in Penn Station Valet, W 42 St & Dyer Ave, and Columbus Ave & W 72 St. In Nov, we need to increase bike capacity in W 42 St & Dyer Ave, Penn Station Valet, Pershing Square South. In Dec, we need to increase bike capacity in W 42 St & Dyer Ave, Penn Station Valet, E 14 St & Avenue B. 
 
 ```{r}
 ggplot(deficit.4quarter.top,aes(x=month, y = deficit, fill = end.station.name)) + geom_col(position = "dodge") + ylab("Top three deficits station") + ggtitle("Fourth Quarter top deficits stations by months")
 
 ```
-### We could see from the four graphs that the three top bike stations we need to increase by capacity is Penn Station Valet, W 42 St & Dyer Ave, and E 47 St & Park Ave. 
+# We could see from the four graphs that the three top bike stations we need to increase by capacity is Penn Station Valet, W 42 St & Dyer Ave, and E 47 St & Park Ave. 
 
 ##Bike Maintenance
 ###By Number of Trips
