@@ -327,9 +327,6 @@ m1 <- by.start.end %>%
 m2 <- m1[1:50, ]
 
 
-#ggmap
-library("ggmap")
-
 #get map base
 source = "google"
 NYCmap <- get_map("New York City",zoom=15,maptype="roadmap",source= source)
@@ -383,8 +380,6 @@ c + geom_bar(stat = "identity")
 
 ##Part 2?
 ```{r}
-#ggmap
-library("ggmap")
 
 #get map base
 source = "google"
@@ -422,9 +417,6 @@ View(trip.total.sur.50)
 
 #To create map with both deficit and surplus we combind all the rows together
 trip.total.defsur <- rbind(trip.total.sur.50,trip.total.def.50)
-
-#ggmap
-library("ggmap")
 
 #get map base
 source = "google"
@@ -537,6 +529,7 @@ trip.by.weekday.defsur$sur.or.def <- ifelse(trip.by.weekday.defsur$netflow > 0, 
 ggmap(NYCmap) + 
   geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.weekday.defsur)
 ```
+
 
 
 #Erics Part
