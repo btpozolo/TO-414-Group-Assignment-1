@@ -190,7 +190,7 @@ trip.by.jan.sur.50 <- trip.by.jan.sur[1:50,]
 
 #Combine the row
 trip.by.jan.defsur <- rbind(trip.by.jan.def.50,trip.by.jan.sur.50)
-trip.by.jan.defsur$sur.or.def <- ifelse(trip.by.jan.defsur$netflow > 0, "surplus","defisit")
+trip.by.jan.defsur$sur.or.def <- ifelse(trip.by.jan.defsur$netflow > 0, "surplus","deficit")
 #map
 ggmap(NYCmap) + 
   geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.jan.defsur)
@@ -236,7 +236,7 @@ View(trip.by.weekend.sur.50)
 
 #Combine the row
 trip.by.weekend.defsur <- rbind(trip.by.weekend.def.50,trip.by.weekend.sur.50)
-trip.by.weekend.defsur$sur.or.def <- ifelse(trip.by.weekend.defsur$netflow > 0, "surplus","defisit")
+trip.by.weekend.defsur$sur.or.def <- ifelse(trip.by.weekend.defsur$netflow > 0, "surplus","deficit")
 #map
 ggmap(NYCmap) + 
   geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.weekend.defsur)
@@ -258,7 +258,7 @@ View(trip.by.weekday.sur.50)
 
 #Combine the row
 trip.by.weekday.defsur <- rbind(trip.by.weekday.def.50,trip.by.weekday.sur.50)
-trip.by.weekday.defsur$sur.or.def <- ifelse(trip.by.weekday.defsur$netflow > 0, "surplus","defisit")
+trip.by.weekday.defsur$sur.or.def <- ifelse(trip.by.weekday.defsur$netflow > 0, "surplus","deficit")
 #map
 ggmap(NYCmap) + 
   geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.weekday.defsur)
