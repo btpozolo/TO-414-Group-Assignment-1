@@ -141,7 +141,7 @@ barplot(monthly, xlab= "Month", ylab = "Volume", main="Volume of Usage by Month"
 
 ```{r}
 #By weekday 
-trainingdata$weekday<- wday(trainingdata$starttime) label=TRUE, abbr = TRUE)
+trainingdata$weekday<- wday(trainingdata$starttime label=TRUE, abbr = TRUE)
 
 Sun <- nrow(subset(trainingdata, trainingdata$weekday == "Sun"))
 Mon <- nrow(subset(trainingdata, trainingdata$weekday == "Mon"))
