@@ -712,7 +712,7 @@ qplot(num.uses, data=by.id, geom="histogram", main = "Total Number of Trips per 
 #QQ Plot to test normality
 qqnorm(by.id$num.uses); qqline(by.id$num.uses, col = 2)
 ```
-The above histogram shows that the data shows more of a somewhat normal distribution of usage, which could indicate that there is not reason to believe that there are other factors outside of chance causing certain bikes to be used more. 
+The above histogram shows that the data follows a somewhat normal distribution of usage, however when looking at the Q-Q plot it is apparent that the data does not follow a normal distribution indicating that there may be some other factor affecting the usage of certain bikes.
 
 ###By Trip Duration
 Next we looked at the total trip durations of each bike to see if any patterns emerged. We however think that frequency of use (as shown above) would be more indicative of difference in usage patterns than the trip durations. 
