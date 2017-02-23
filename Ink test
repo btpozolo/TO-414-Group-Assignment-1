@@ -83,6 +83,9 @@ citibike2k16 <- rbind(M1, M10)
 rm(list = setdiff(ls(), "citibike2k16"))
 
 
+trainingdata <- citibike2k16
+
+
 #Reformatting Time
 trainingdata$starttime <- as.POSIXct(as.character(trainingdata$starttime), format = '%m/%d/%Y %H:%M:%S')
 trainingdata$stoptime <- as.POSIXct(as.character(trainingdata$stoptime), format = '%m/%d/%Y %H:%M:%S')
@@ -103,7 +106,6 @@ trainingdata$stoptime <- as.POSIXct(as.character(trainingdata$stoptime), format 
 
 ```{r}
 #By Month
-trainingdata <- citibike2k16
 trainingdata$month <- month(as.POSIXct(trainingdata$starttime, format="%m/%d/%Y %H:%M:%S"))
 trainingdata$month <- factor(trainingdata$month)
 
