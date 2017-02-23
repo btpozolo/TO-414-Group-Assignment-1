@@ -1,6 +1,6 @@
 ---
-title: "test"
-author: "Eric Jensen"
+title: "Dragon Group Assignment"
+author: "Eric Jensen, Blake Pozolo, Oranich Boondiskulchok, Xuanyi Liu, and Juan Rodriguez"
 date: "February 12, 2017"
 output:
   html_document: 
