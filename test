@@ -6,6 +6,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
+#EVERYONE PUT ANY LIBRARY YOU USE BELOW 
+
 library(ggplot2)
 library(dplyr)
 library(ggmap)
@@ -71,6 +73,9 @@ citibike2k16 <- rbind(M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12)
 
 #TO BE DELETED LATER only using 3000 data points
 citibike2k16 <- sample_n(citibike2k16, 3000)
+
+#remove all variables except citibike
+rm(list=setdiff(ls(), "citibike2k16"))
 ```
 
 
@@ -78,7 +83,7 @@ citibike2k16 <- sample_n(citibike2k16, 3000)
 
 
 #Pattern Analysis 
-
+Juan
 
 
 
@@ -284,7 +289,7 @@ barplot(tt$travel_duration,
 
 #Visualizations
 
-
+Oranich
 
 
 
@@ -532,6 +537,10 @@ ggmap(NYCmap) +
 
 
 
+
+
+
+
 #Erics Part
 
 
@@ -687,7 +696,7 @@ The most common route is 2006_2006 which is Central Park S & 6th Ave. This makes
 
 #Business Solutions
 
-
+Xuanyi part
 
 
 
@@ -721,14 +730,36 @@ trip.by.month$deficit <- trip.by.month$n.x - trip.by.month$n.y
 trip.by.month$month <- month(trip.by.month$stoptime)
 ```
 
-##Bike Maintenance
+
+
+
+
+
+
+
+##Bike Maintenance (BLAKE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ###By Number of Trips
 
 To check on if certain bikes are being used more than others, we first looked into the number of unique trips taken by each bike. 
 If the bikes are being used roughly the same amount of times, we would expect the histogram of number of uses to be roughly normal.
 
 ```{r}
-#TODO make sure the t data is full data set
+#setting data to data set
+t<-citibike2k16
 
 #Grouping by bikeID
 by.id <- t %>%
