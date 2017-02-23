@@ -65,17 +65,82 @@ names(M12) <- c("tripduration", "starttime", "stoptime", "start.station.id", "st
 
 #Combine to single data set
 citibike2k16 <- rbind(M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12)
-
-
-(insert data cleaning here)
+```
 
 #Pattern Analysis
 ##Ride Volume
-###By Time of Day
-
-###By Day of Week
-
 ###By Month of Year
+```{r}
+#By Month
+trainingdata <- citibike2k16
+trainingdata$month <- month(as.POSIXct(trainingdata$starttime, format="%m/%d/%Y %H:%M:%S"))
+trainingdata$month <- factor(trainingdata$month)
+
+Jan <- nrow(subset(trainingdata, trainingdata$month == 1))
+Feb <- nrow(subset(trainingdata, trainingdata$month == 2))
+Mar <- nrow(subset(trainingdata, trainingdata$month == 3))
+Apr <- nrow(subset(trainingdata, trainingdata$month == 4))
+May <- nrow(subset(trainingdata, trainingdata$month == 5))
+Jun <- nrow(subset(trainingdata, trainingdata$month == 6))
+Jul <- nrow(subset(trainingdata, trainingdata$month == 7))
+Aug <- nrow(subset(trainingdata, trainingdata$month == 8))
+Sep <- nrow(subset(trainingdata, trainingdata$month == 9))
+Oct <- nrow(subset(trainingdata, trainingdata$month == 10))
+Nov <- nrow(subset(trainingdata, trainingdata$month == 11))
+Dec <- nrow(subset(trainingdata, trainingdata$month == 12))
+
+monthly <- c(Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec)
+barplot(monthly, xlab= "Month", ylab = "Volume", main="Volume of Usage by Month",  names.arg=c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+```
+###By Day of Week
+```{r}
+#By weekday 
+trainingdata$weekday<- wday(as.POSIXct(trainingdata$starttime, format="%m/%d/%Y %H:%M:%S"), label=TRUE, abbr = TRUE)
+
+Sun <- nrow(subset(trainingdata, trainingdata$weekday == "Sun"))
+Mon <- nrow(subset(trainingdata, trainingdata$weekday == "Mon"))
+Tue <- nrow(subset(trainingdata, trainingdata$weekday == "Tues"))
+Wed <- nrow(subset(trainingdata, trainingdata$weekday == "Wed"))
+Thr <- nrow(subset(trainingdata, trainingdata$weekday == "Thurs"))
+Fri <- nrow(subset(trainingdata, trainingdata$weekday == "Fri"))
+Sat <- nrow(subset(trainingdata, trainingdata$weekday == "Sat"))
+
+weekly <- c(Sun, Mon, Tue, Wed, Thr, Fri, Sat)
+barplot(weekly, xlab= "Day Of Week", ylab = "Volume", main="Volume of Usage by Day of Week",  names.arg=c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ))
+```
+###By Time of Day
+```{r}
+#Time of Day
+trainingdata$hour<- hour(as.POSIXct(trainingdata$starttime, format="%m/%d/%Y %H:%M:%S"))
+
+a <- nrow(subset(trainingdata, trainingdata$hour == 1))                       
+b <- nrow(subset(trainingdata, trainingdata$hour == 2))                       
+c <- nrow(subset(trainingdata, trainingdata$hour == 3))                       
+d <- nrow(subset(trainingdata, trainingdata$hour == 4))                       
+e <- nrow(subset(trainingdata, trainingdata$hour == 5))                       
+f <- nrow(subset(trainingdata, trainingdata$hour == 6))                       
+g <- nrow(subset(trainingdata, trainingdata$hour == 7))                       
+h <- nrow(subset(trainingdata, trainingdata$hour == 8))                       
+i <- nrow(subset(trainingdata, trainingdata$hour == 9))                       
+j <- nrow(subset(trainingdata, trainingdata$hour == 10))                      
+k <- nrow(subset(trainingdata, trainingdata$hour == 11))                      
+l <- nrow(subset(trainingdata, trainingdata$hour == 12))                      
+m <- nrow(subset(trainingdata, trainingdata$hour == 13))                      
+n <- nrow(subset(trainingdata, trainingdata$hour == 14)) 
+o <- nrow(subset(trainingdata, trainingdata$hour == 15))                      
+p <- nrow(subset(trainingdata, trainingdata$hour == 16))                      
+q <- nrow(subset(trainingdata, trainingdata$hour == 17))                    
+r <- nrow(subset(trainingdata, trainingdata$hour == 18))                    
+s <- nrow(subset(trainingdata, trainingdata$hour == 19))                    
+t <- nrow(subset(trainingdata, trainingdata$hour == 20))                  
+u <- nrow(subset(trainingdata, trainingdata$hour == 21))                    
+v <- nrow(subset(trainingdata, trainingdata$hour == 22))                    
+w <- nrow(subset(trainingdata, trainingdata$hour == 23))                    
+x <- nrow(subset(trainingdata, trainingdata$hour == 24))                      
+
+hourly <- c(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x)
+barplot(hourly, xlab= "Hour", ylab = "Volume", main="Volume of Usage per Hour",  names.arg=c("1", "2", "3", "4", "5","6","7","8","9","10","11","12","13","14","15","16", "17","18","19", "20", "21", "22", "23", "24"), las =2)
+```
 
 ##Stations
 ###Asymetric Traffic
