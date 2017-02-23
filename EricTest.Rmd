@@ -708,7 +708,7 @@ by.id <- t %>%
 qplot(num.uses, data=by.id, geom="histogram", main = "Total Number of Trips per Bike", xlab = "Total Number of Trips (per bike)", ylab = "Amount of Bikes") +
    scale_y_continuous(labels = comma) + 
    scale_x_continuous(labels = comma)
-  
+
 #QQ Plot to test normality
 qqnorm(by.id$num.uses); qqline(by.id$num.uses, col = 2)
 ```
