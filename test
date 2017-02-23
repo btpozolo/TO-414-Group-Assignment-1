@@ -1,13 +1,12 @@
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 #Unpacking data and libraries
 
 
 ```{r}
+knitr::opts_chunk$set(echo = TRUE)
 #EVERYONE PUT ANY LIBRARY YOU USE BELOW 
 
+library(plyr)
 library(ggplot2)
 library(dplyr)
 library(ggmap)
