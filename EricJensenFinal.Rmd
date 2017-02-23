@@ -97,7 +97,9 @@ ggmap(NYCmap) + geom_point(aes(x=longitude,y=latitude, size = frequency, color=f
 #Barplot of top 10 most popular start stations
 by.start.10 <- by.start[1:10, ]
 
-barplot(by.start.10$frequency, main = "Most Frequent Start Stations", xlab = "Station ID", ylab = "Frequency", names.arg = c("519", "435", "293", "497", "285", "490", "402", "477", "459", "168"), col = "blue")
+by.start.10$station.id
+
+barplot(by.start.10$frequency, main = "Most Frequent Start Stations", xlab = "Station ID", ylab = "Frequency", names.arg = c("519", "435", "497", "426", "402", "490", "285", "284", "151", "459"), col = "blue")
 ```
 
 As you can see, the most common start station is station 519 which is Pershing Square North
@@ -126,9 +128,7 @@ ggmap(NYCmap) + geom_point(aes(x=longitude,y=latitude, size = frequency, color=f
 #Barplot of top 10 most popular start stations
 by.end.10 <- by.end[1:10, ]
 
-by.end.10$station.id
-
-barplot(by.start.10$frequency, main = "Most Frequent End Stations", xlab = "Station ID", ylab = "Frequency", names.arg = c("519", "435", "293", "497", "477", "285", "490", "402", "168", "284"), col = "blue")
+barplot(by.start.10$frequency, main = "Most Frequent End Stations", xlab = "Station ID", ylab = "Frequency", names.arg = c("519", "402", "426", "497", "435", "285", "490", "284", "459", "477"), col = "blue")
 ```
 
 Similar to the start station, the most common end station is 519 which is Pershing Square North.
@@ -159,8 +159,8 @@ ggmap(NYCmap) + geom_point(aes(x=longitude, y=latitude, size = frequency, color=
 #Barplot of most frequently used station
 by.start.end.10 <- by.start.end.1000[1:10, ]
 
-barplot(by.start.end.10$frequency, main = "Most Frequented Stations", xlab = "Station ID", ylab = "Frequency", names.arg = c("519", "435", "293", "497", "285",
-                                   "477", "490", "402", "168", "459"), col = "blue")
+barplot(by.start.end.10$frequency, main = "Most Frequented Stations", xlab = "Station ID", ylab = "Frequency", names.arg = c("519", "435", "402", "497", "426",
+                                   "285", "490", "284", "151", "459"), col = "blue")
 ```
 As expected, the most common station is 519, Pershing Square North, which was also the most common start and end station
 
@@ -199,12 +199,8 @@ ggmap(NYCmap) +
 
 by.route.10 <- by.route.1000[1:10, ]
 
-View(by.route.10)
-
 #Barplot of most frequented routes
-barplot(by.route.10$frequency, names.arg = c("2006_2006", "519_477", "435_509", "3140_3154",
-                               "519_492", "519_498", "3093_2002", "3119_3124",
-                               "435_462", "2002_3093"), main = "Most Common Routes", ylab = "Frequency", col = "Blue",las = 2)
+barplot(by.route.10$frequency, names.arg = c("2006_2006", "2006_3143", "387_387",   "514_426", "435_509", "519_492", "3150_3147", "519_477", "519_491", "3093_2002"), main = "Most Common Routes", ylab = "Frequency", col = "Blue",las = 2)
 ```
 
 The most common route is 2006_2006 which is Central Park S & 6th Ave. This makes sense because the most common route is for people to ride their bikes around Central Park.
