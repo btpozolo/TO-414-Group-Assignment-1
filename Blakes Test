@@ -755,6 +755,7 @@ If the bikes are being used roughly the same amount of times, we would expect th
 
 ```{r}
 #TODO make sure the t data is full data set
+t <- citibike2k16
 
 #Grouping by bikeID
 by.id <- t %>%
