@@ -92,18 +92,8 @@ M10.M12 <- rbind(M10,M11,M12)
 M10.M12$starttime <- as.POSIXct(as.character(M10.M12$starttime), format = '%Y-%m-%d %H:%M:%S')
 M10.M12$stoptime <- as.POSIXct(as.character(M10.M12$stoptime), format = '%Y-%m-%d %H:%M:%S')
 
-
-#M10$starttime <- as.POSIXct(as.character(M10$starttime), format = '%Y-%m-%d %H:%M:%S')
-#M10$stoptime <- as.POSIXct(as.character(M10$stoptime), format = '%Y-%m-%d %H:%M:%S')
-
-#combine M1 and M10
-#citibike2k16 <- rbind(M1,M10)
-
 # #Combine to single data set
 citibike2k16 <- rbind(M1.M9,M10.M12) 
-
-# # #TO BE DELETED LATER only using 3000 data points
-citibike2k16 <- sample_n(citibike2k16, 3000)
 
 rm(list = setdiff(ls(), "citibike2k16"))
 
@@ -313,7 +303,9 @@ barplot(tt$travel_duration,
 #get map base
 source = "google"
 NYCmap <- get_map("New York City",zoom=12,maptype="roadmap",source= source)
-
+```
+##Stations with top surplus and deficit for the whole 2016 as shown on the map
+```{r}
 #Finding total outflows and inflows for each station
 trip.total.inflow <- count(trainingdata, end.station.name)
 trip.total.outflow <- count(trainingdata, start.station.name)
@@ -349,8 +341,10 @@ NYCmap <- get_map("New York City",zoom=12,maptype="roadmap",source= source)
 #map
 ggmap(NYCmap) + 
   geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.total.defsur)+ggtitle("Top 50 Deficit and Top 50 Surplus Stations of 2016")
+```
 
-
+##Stations with top deficit and surplus for each month of the year 2016 as shown on the map
+```{r}
 #Finding outflow and inflow by month for each station
 trip.by.month.inflow <- count(trainingdata, end.station.name, stoptime = cut(stoptime, breaks ="month"))
 trip.by.month.outflow <- count(trainingdata, start.station.name, starttime = cut(starttime, breaks= "month"))
@@ -383,7 +377,10 @@ trip.by.jan.defsur$sur.or.def <- ifelse(trip.by.jan.defsur$netflow > 0, "surplus
 #map
 ggmap(NYCmap) + 
   geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.jan.defsur)+ggtitle("Top 50 Deficit and Top 50 Surplus Stations of January 2016")
-  
+
+```
+##Stations with top deficit and surplus for the weekend versus weekday as shown on the map
+```{r}
 #Finding outflow and inflow by weekends and weekdays
 
 #First we create the columns to see what day it is
@@ -674,7 +671,7 @@ deficit.2quarter.top <- rbind(Apr.deficit.top,May.deficit.top,June.deficit.top)
 deficit.3quarter.top <- rbind(July.deficit.top,Aug.deficit.top,Sep.deficit.top)
 deficit.4quarter.top <- rbind(Oct.deficit.top,Nov.deficit.top,Dec.deficit.top)
 
-#The graph could show in Jan, we need to increase bike capacity in PABT Valet, Penn Station Valet, and Broadway & W 55 St. In Feb, we need to increase bike capacity in Penn Station Valet, PABT Valet, Pershing Square South. In March, we need to increase bike capacity in W 42 St & Dyer Ave, Penn Station Valet, W 52 St & 5 Ave.
+#The graph could show in Jan, we need to increase bike capacity in Broadway & E 14 St, Broadway& W 41 St, and W 4 St & 7 Ave S. In Feb, we need to increase bike capacity in E 15 St & 3 Ave, Pershing Square North, 6 Ave & W 33 St. In March, we need to increase bike capacity in 11 Ave & W 41 St, Bayard St & Baxter St, E 3 St & 1 Ave .
 ggplot(deficit.1quarter.top,aes(x=month, y = deficit, fill = end.station.name)) + geom_col(position = "dodge") + ylab("Top three deficits station") + ggtitle("First Quarter top deficits stations by months")
 
 #This graph could show in April, we need to increase bike capacity in W 42 St & Dyer Ave, E 47 St & Park Ave, and Pershing Square North. In May, we need to increase bike capacity in W 42 St & Dyer Ave, Broadway & E 22 St, Penn Station Valet. In June, we need to increase bike capacity in Barrow St & Hudson St,  Penn Station Valet, Cleveland Pl & Spring.
