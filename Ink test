@@ -497,15 +497,10 @@ trip.by.day.inflow <- count(trainingdata.date, end.station.name, daytype)
 trip.by.day.outflow <- count(trainingdata.date, start.station.name, daytype)
 
 
-#Create Trip by name
+#Create Trip by day
 #Finding surplus or deficit by daytype for each station
 trip.by.day <- merge(trip.by.day.inflow, trip.by.day.outflow, by = c(1,2))
 trip.by.day$netflow <- trip.by.day$n.x - trip.by.day$n.y
-
-trip.by.day$station.latitude <- location$start.station.latitude[match(trip.by.day$station.name, location$start.station.name)]
-trip.by.day$station.longitude <- location$start.station.longitude[match(trip.by.day$station.name, location$start.station.name)]
-
-
 
 names(trip.by.day) <- c("station.name","day","inflow","outflow","netflow")
 
