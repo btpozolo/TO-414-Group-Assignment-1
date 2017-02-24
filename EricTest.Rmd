@@ -63,10 +63,6 @@ M1.M9 <- rbind(M1,M2,M3,M4,M5,M6,M7,M8,M9)
 M1.M9$starttime <- as.POSIXct(as.character(M1.M9$starttime), format = '%m/%d/%Y %H:%M:%S')
 M1.M9$stoptime <- as.POSIXct(as.character(M1.M9$stoptime), format = '%m/%d/%Y %H:%M:%S')
 
-
-#M1$starttime <- as.POSIXct(as.character(M1$starttime), format = '%m/%d/%Y %H:%M:%S')
-#M1$stoptime <- as.POSIXct(as.character(M1$stoptime), format = '%m/%d/%Y %H:%M:%S')
-
 download.file("https://s3.amazonaws.com/tripdata/201610-citibike-tripdata.zip", temp)
 M10 <- read.csv(unz(temp, "201610-citibike-tripdata.csv"), header = T)
 unlink(temp)
@@ -92,18 +88,8 @@ M10.M12 <- rbind(M10,M11,M12)
 M10.M12$starttime <- as.POSIXct(as.character(M10.M12$starttime), format = '%Y-%m-%d %H:%M:%S')
 M10.M12$stoptime <- as.POSIXct(as.character(M10.M12$stoptime), format = '%Y-%m-%d %H:%M:%S')
 
-
-#M10$starttime <- as.POSIXct(as.character(M10$starttime), format = '%Y-%m-%d %H:%M:%S')
-#M10$stoptime <- as.POSIXct(as.character(M10$stoptime), format = '%Y-%m-%d %H:%M:%S')
-
-#combine M1 and M10
-#citibike2k16 <- rbind(M1,M10)
-
 # #Combine to single data set
 citibike2k16 <- rbind(M1.M9,M10.M12) 
-
-# # #TO BE DELETED LATER only using 3000 data points
-citibike2k16 <- sample_n(citibike2k16, 3000)
 
 rm(list = setdiff(ls(), "citibike2k16"))
 
