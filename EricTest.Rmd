@@ -664,7 +664,7 @@ deficit.top
 ```
 ###The deficit.top shows the top three station name that would need to increase bike capacity by months with the highest deficits
 
-```{r)
+```{r}
 
 #Sort months data by quartely to easily read the graphs 
 
