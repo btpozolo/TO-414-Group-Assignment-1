@@ -667,6 +667,7 @@ deficit.top
 ###The deficit.top shows the top three station name that would need to increase bike capacity by months with the highest deficits
 
 ```{r)
+
 #Sort months data by quartely to easily read the graphs 
 
 deficit.1quarter.top <- rbind(Jan.deficit.top,Feb.deficit.top,March.deficit.top)
