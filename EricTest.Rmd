@@ -339,6 +339,7 @@ NYCmap <- get_map("New York City",zoom=12,maptype="roadmap",source= source)
 ggmap(NYCmap) + 
   geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = abs(netflow), size = abs(netflow/10)), data= trip.total.defsur)+ggtitle("Top 50 Deficit and Top 50 Surplus Stations of 2016")
 ```
+Penn Station Valet station has the most deficit flow in the year,
 ##Stations with the top deficit and surplus of each month on map
 ```{r}
 
@@ -375,6 +376,8 @@ trip.by.jan.defsur$sur.or.def <- ifelse(trip.by.jan.defsur$netflow > 0, "surplus
 ggmap(NYCmap) + 
   geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = abs(netflow), size = abs(netflow/10)), data= trip.by.jan.defsur)+ggtitle("Top 50 Deficit and Top 50 Surplus Stations of January 2016")
 ```
+For January 2016, we noticed that the stations with the most unbalanced flow are clustering around the Lincoln Tunnel in the Manhattan borough. 
+
 ##Stations with the top deficit and surplus on weekends VS weekdays
 ```{r}
 #Finding outflow and inflow by weekends and weekdays
@@ -435,6 +438,8 @@ trip.by.weekday.defsur$sur.or.def <- ifelse(trip.by.weekday.defsur$netflow > 0, 
 ggmap(NYCmap) + 
   geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = abs(netflow), size = abs(netflow/10)), data= trip.by.weekday.defsur)+ggtitle("Top 50 Deficit and Top 50 Surplus Stations of 2016 (weekday)")
 ```
+On the weekend, the stations with top deficit flow are clustering around the south of the Central Park, 
+while on the weekday, the stations with both the top deficit and surplus are clustering around the Lincoln Tunnel in the Manhattan borough. 
 
 ##Most Frequent Start Station
 ```{r}
