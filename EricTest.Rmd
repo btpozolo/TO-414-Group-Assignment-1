@@ -313,7 +313,10 @@ barplot(tt$travel_duration,
 #get map base
 source = "google"
 NYCmap <- get_map("New York City",zoom=12,maptype="roadmap",source= source)
+```
+##Stations with the top deficit and surplus of the year 2016 on map
 
+```{r}
 #Finding total outflows and inflows for each station
 trip.total.inflow <- count(trainingdata, end.station.name)
 trip.total.outflow <- count(trainingdata, start.station.name)
@@ -349,7 +352,9 @@ NYCmap <- get_map("New York City",zoom=12,maptype="roadmap",source= source)
 #map
 ggmap(NYCmap) + 
   geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.total.defsur)+ggtitle("Top 50 Deficit and Top 50 Surplus Stations of 2016")
-
+```
+##Stations with the top deficit and surplus of each month on map
+```{r}
 
 #Finding outflow and inflow by month for each station
 trip.by.month.inflow <- count(trainingdata, end.station.name, stoptime = cut(stoptime, breaks ="month"))
@@ -383,7 +388,9 @@ trip.by.jan.defsur$sur.or.def <- ifelse(trip.by.jan.defsur$netflow > 0, "surplus
 #map
 ggmap(NYCmap) + 
   geom_point(aes(x=station.longitude,y=station.latitude, fill = netflow,color = sur.or.def, alpha = netflow, size = netflow/10), data= trip.by.jan.defsur)+ggtitle("Top 50 Deficit and Top 50 Surplus Stations of January 2016")
-  
+```
+##Stations with the top deficit and surplus on weekends VS weekdays
+```{r}
 #Finding outflow and inflow by weekends and weekdays
 
 #First we create the columns to see what day it is
